@@ -87,9 +87,6 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto hairline-t mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-text-secondary/70">
         <p>© 2026 StockSaathi. All rights reserved.</p>
-        <p className="font-mono mt-2 sm:mt-0">
-          Designed with Hubtown visual restraint.
-        </p>
       </div>
     </footer>
   );

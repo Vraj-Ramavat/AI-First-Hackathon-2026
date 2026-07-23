@@ -14,7 +14,7 @@ export default function TeamSection() {
     {
       name: "Vraj Ramavat",
       role: "Frontend Engineer",
-      focus: "Hubtown Visual System & UI/UX",
+      focus: "Design System & UI/UX",
       icon: Layout,
       bio: "Crafts the modern single-accent interface, interactive scanner simulation, and Kirana dashboard application.",
     },

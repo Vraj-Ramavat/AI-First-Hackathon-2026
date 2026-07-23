@@ -93,7 +93,7 @@ export default function IntroSequence({ onComplete }: { onComplete?: () => void 
           </motion.div>
         )}
 
-        {/* Phase 2 & 3: Hubtown Wordmark Reveal */}
+        {/* Phase 2 & 3: Wordmark Reveal */}
         {(phase === "reveal" || phase === "exit") && (
           <motion.div
             key="phase2"
