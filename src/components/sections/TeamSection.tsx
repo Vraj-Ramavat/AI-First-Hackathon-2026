@@ -42,19 +42,17 @@ export default function TeamSection() {
         </p>
       </div>
 
-      {/* Team Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Team Cards (Floating Content, No Bounding Containers) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16">
         {members.map((member, idx) => {
           const IconComp = member.icon;
           return (
             <div
               key={idx}
-              className="p-8 sm:p-10 rounded-3xl bg-surface hairline-all space-y-6 flex flex-col justify-between hover:border-accent/30 transition-all duration-300"
+              className="space-y-6 flex flex-col justify-between"
             >
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-base hairline-all flex items-center justify-center">
-                  <IconComp className="w-6 h-6 text-accent" />
-                </div>
+                <IconComp className="w-6 h-6 text-accent" />
 
                 <div>
                   <h3 className="text-2xl font-display font-bold text-text-primary">
@@ -78,9 +76,9 @@ export default function TeamSection() {
         })}
       </div>
 
-      {/* Closing CTA Box */}
-      <div className="p-10 sm:p-14 rounded-3xl bg-surface-2 hairline-all text-center space-y-6 max-w-4xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-base hairline-all text-xs font-mono text-accent">
+      {/* Closing Banner */}
+      <div className="py-16 hairline-t text-center space-y-6 max-w-3xl mx-auto">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2/60 text-xs font-mono text-accent">
           <Award className="w-3.5 h-3.5 text-accent" />
           <span>IIT Jammu I3C Summer School &apos;26 AI First Hackathon</span>
         </div>
@@ -98,7 +96,7 @@ export default function TeamSection() {
           </a>
           <a
             href="/dashboard"
-            className="px-6 py-3 rounded-full bg-surface hairline-all text-text-primary text-xs font-mono uppercase tracking-wider font-medium hover:bg-surface-2 transition-colors"
+            className="px-6 py-3 rounded-full bg-surface-2/60 hairline-all text-text-primary text-xs font-mono uppercase tracking-wider font-medium hover:bg-surface-2 transition-colors"
           >
             Launch Dashboard
           </a>

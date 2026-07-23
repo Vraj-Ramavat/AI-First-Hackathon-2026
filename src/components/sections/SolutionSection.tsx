@@ -1,12 +1,30 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Camera, TrendingUp, MessageSquare, ArrowRight } from "lucide-react";
 
+// SSR-safe dynamic import for R3F Pillar 3D Canvas
+const Pillar3DCanvas = dynamic(() => import("@/src/components/Pillar3DCanvas"), {
+  ssr: false,
+  loading: () => <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-surface-2/40 animate-pulse shrink-0" />,
+});
+
 export default function SolutionSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const pillars = [
     {
       step: "01",
       icon: Camera,
+      type: "reading" as const,
       title: "Smart Stock Reading",
       subtitle: "Computer Vision Shelf Analytics",
       description:
@@ -15,6 +33,7 @@ export default function SolutionSection() {
     {
       step: "02",
       icon: TrendingUp,
+      type: "forecasting" as const,
       title: "Demand Forecasting",
       subtitle: "Hyper-Local Time-Series AI",
       description:
@@ -23,6 +42,7 @@ export default function SolutionSection() {
     {
       step: "03",
       icon: MessageSquare,
+      type: "reordering" as const,
       title: "Auto Reorder Alerts",
       subtitle: "Proactive WhatsApp Decision Engine",
       description:
@@ -42,22 +62,31 @@ export default function SolutionSection() {
         </h2>
       </div>
 
-      {/* 3 Solution Pillar Sequential Scroll Moments */}
-      <div className="space-y-12">
+      {/* 3 Solution Pillars with 3D Object Accents */}
+      <div className="space-y-16">
         {pillars.map((pillar) => {
           const IconComponent = pillar.icon;
           return (
             <div
               key={pillar.step}
-              className="p-8 sm:p-12 rounded-3xl bg-surface hairline-all grid grid-cols-1 md:grid-cols-12 gap-8 items-center hover:border-accent/30 transition-all duration-300"
+              className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start py-8 hairline-b last:border-b-0"
             >
-              {/* Step Numeral */}
-              <div className="md:col-span-2 flex items-center gap-4">
-                <span className="text-5xl font-display font-extrabold text-accent/40 font-mono">
-                  {pillar.step}
-                </span>
-                <div className="w-12 h-12 rounded-2xl bg-base hairline-all flex items-center justify-center">
-                  <IconComponent className="w-6 h-6 text-accent" />
+              {/* 3D Canvas Element / Step Numeral */}
+              <div className="md:col-span-3 flex items-center gap-4">
+                {!isMobile ? (
+                  <Pillar3DCanvas pillarType={pillar.type} />
+                ) : (
+                  <div className="w-16 h-16 rounded-2xl bg-surface-2/60 hairline-all flex items-center justify-center shrink-0">
+                    <IconComponent className="w-6 h-6 text-accent" />
+                  </div>
+                )}
+                <div>
+                  <span className="text-4xl font-display font-extrabold text-accent/40 font-mono block">
+                    {pillar.step}
+                  </span>
+                  <span className="text-[10px] font-mono text-text-secondary uppercase">
+                    Pillar {pillar.step}
+                  </span>
                 </div>
               </div>
 
@@ -72,7 +101,7 @@ export default function SolutionSection() {
               </div>
 
               {/* Description */}
-              <div className="md:col-span-6 text-text-secondary text-sm leading-relaxed">
+              <div className="md:col-span-5 text-text-secondary text-sm leading-relaxed">
                 {pillar.description}
               </div>
             </div>
@@ -81,36 +110,36 @@ export default function SolutionSection() {
       </div>
 
       {/* Flow Diagram Banner */}
-      <div className="p-8 sm:p-10 rounded-2xl bg-surface-2 hairline-all">
-        <p className="text-center text-xs font-mono uppercase tracking-widest text-text-secondary mb-8">
+      <div className="py-12 border-t border-b border-white/5 space-y-8">
+        <p className="text-center text-xs font-mono uppercase tracking-widest text-text-secondary">
           The StockSaathi End-to-End Workflow
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-center">
           
-          <div className="flex-1 p-4 bg-base rounded-xl hairline-all w-full">
-            <span className="text-xs font-mono text-accent block mb-1">STEP 1</span>
-            <p className="text-sm font-semibold text-text-primary">Shelf Photo</p>
+          <div className="space-y-1 w-full">
+            <span className="text-xs font-mono text-accent block">STEP 1</span>
+            <p className="text-base font-semibold text-text-primary">Shelf Photo</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0" />
+          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
-          <div className="flex-1 p-4 bg-base rounded-xl hairline-all w-full">
-            <span className="text-xs font-mono text-accent block mb-1">STEP 2</span>
-            <p className="text-sm font-semibold text-text-primary">CV Model Reading</p>
+          <div className="space-y-1 w-full">
+            <span className="text-xs font-mono text-accent block">STEP 2</span>
+            <p className="text-base font-semibold text-text-primary">CV Model Reading</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0" />
+          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
-          <div className="flex-1 p-4 bg-base rounded-xl hairline-all w-full">
-            <span className="text-xs font-mono text-accent block mb-1">STEP 3</span>
-            <p className="text-sm font-semibold text-text-primary">Forecast Engine</p>
+          <div className="space-y-1 w-full">
+            <span className="text-xs font-mono text-accent block">STEP 3</span>
+            <p className="text-base font-semibold text-text-primary">Forecast Engine</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0" />
+          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
-          <div className="flex-1 p-4 bg-base rounded-xl hairline-all w-full">
-            <span className="text-xs font-mono text-accent block mb-1">STEP 4</span>
-            <p className="text-sm font-semibold text-text-primary">WhatsApp Alert</p>
+          <div className="space-y-1 w-full">
+            <span className="text-xs font-mono text-accent block">STEP 4</span>
+            <p className="text-base font-semibold text-text-primary">WhatsApp Alert</p>
           </div>
 
         </div>

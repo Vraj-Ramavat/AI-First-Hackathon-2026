@@ -1,13 +1,31 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { CheckCircle2, Clock, Milestone, Radio } from "lucide-react";
 
+// SSR-safe dynamic import for R3F Roadmap 3D Canvas
+const Roadmap3DCanvas = dynamic(() => import("@/src/components/Roadmap3DCanvas"), {
+  ssr: false,
+  loading: () => <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-surface-2/40 animate-pulse shrink-0" />,
+});
+
 export default function RoadmapSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const milestones = [
     {
+      stage: "now" as const,
       phase: "Phase 1 • Now",
       status: "CURRENT MVP",
-      statusColor: "text-accent border-accent/40 bg-accent/10",
+      statusColor: "text-accent font-bold",
       icon: CheckCircle2,
       title: "Hackathon Prototype & Simulated Analytics",
       description:
@@ -19,9 +37,10 @@ export default function RoadmapSection() {
       ],
     },
     {
+      stage: "months3" as const,
       phase: "Phase 2 • Next 3 Months",
       status: "IN PLANNING",
-      statusColor: "text-text-primary border-white/20 bg-surface-2",
+      statusColor: "text-text-primary font-bold",
       icon: Clock,
       title: "Live Store Pilots & Trained Detector",
       description:
@@ -33,9 +52,10 @@ export default function RoadmapSection() {
       ],
     },
     {
+      stage: "months12" as const,
       phase: "Phase 3 • 6-12 Months",
       status: "FUTURE VISION",
-      statusColor: "text-text-secondary border-white/10 bg-base",
+      statusColor: "text-text-secondary font-bold",
       icon: Radio,
       title: "Multilingual Voice & Supplier Auto-Order",
       description:
@@ -63,29 +83,33 @@ export default function RoadmapSection() {
         </p>
       </div>
 
-      {/* 3-Stage Timeline */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* 3-Stage Timeline with 3D Growth Clusters */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16">
         {milestones.map((milestone, idx) => {
           const IconComp = milestone.icon;
           return (
             <div
               key={idx}
-              className="p-8 rounded-3xl bg-surface hairline-all space-y-6 flex flex-col justify-between hover:border-accent/30 transition-all duration-300 relative"
+              className="space-y-6 flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono text-accent">
                     {milestone.phase}
                   </span>
-                  <span
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${milestone.statusColor}`}
-                  >
+                  <span className={`text-[10px] font-mono ${milestone.statusColor}`}>
                     {milestone.status}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <IconComp className="w-5 h-5 text-accent" />
+                  {!isMobile ? (
+                    <Roadmap3DCanvas stage={milestone.stage} />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-surface-2/60 hairline-all flex items-center justify-center shrink-0">
+                      <IconComp className="w-5 h-5 text-accent" />
+                    </div>
+                  )}
                   <h3 className="text-xl font-display font-bold text-text-primary">
                     {milestone.title}
                   </h3>
@@ -113,7 +137,7 @@ export default function RoadmapSection() {
         })}
       </div>
 
-      <div className="p-6 rounded-2xl bg-surface-2 hairline-all flex items-center gap-4 text-xs text-text-secondary font-mono justify-center">
+      <div className="py-6 border-t border-white/5 flex items-center gap-4 text-xs text-text-secondary font-mono justify-center">
         <Milestone className="w-4 h-4 text-accent shrink-0" />
         <span>Summer School &apos;26 AI First Hackathon • Team Pixel Error Roadmap</span>
       </div>

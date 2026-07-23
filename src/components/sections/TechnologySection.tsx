@@ -1,6 +1,6 @@
 "use client";
 
-import { Layers, Eye, Activity, BellRing, Cloud } from "lucide-react";
+import { Eye, Activity, BellRing, Cloud } from "lucide-react";
 
 export default function TechnologySection() {
   const techLayers = [
@@ -49,21 +49,19 @@ export default function TechnologySection() {
         </p>
       </div>
 
-      {/* 4 Architectural Layers */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* 4 Architectural Layers (Floating Content, Hairline Separator) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
         {techLayers.map((item) => {
           const IconComp = item.icon;
           return (
             <div
               key={item.layer}
-              className="p-8 sm:p-10 rounded-3xl bg-surface hairline-all space-y-6 hover:border-accent/30 transition-all duration-300 flex flex-col justify-between"
+              className="space-y-6 flex flex-col justify-between py-6 hairline-b"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-base hairline-all flex items-center justify-center">
-                    <IconComp className="w-6 h-6 text-accent" />
-                  </div>
-                  <span className="font-mono text-sm text-accent/60 font-bold">
+                  <IconComp className="w-6 h-6 text-accent" />
+                  <span className="font-mono text-xs text-accent/60 font-bold">
                     LAYER {item.layer}
                   </span>
                 </div>
@@ -73,11 +71,6 @@ export default function TechnologySection() {
                 <p className="text-sm text-text-secondary leading-relaxed">
                   {item.description}
                 </p>
-              </div>
-
-              <div className="pt-4 border-t border-white/5 flex items-center gap-2 text-xs font-mono text-text-secondary">
-                <Layers className="w-3.5 h-3.5 text-accent" />
-                <span>Modular Microservices Architecture</span>
               </div>
             </div>
           );

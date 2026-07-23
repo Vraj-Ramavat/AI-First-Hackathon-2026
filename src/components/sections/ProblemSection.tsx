@@ -5,9 +5,9 @@ import { AlertTriangle, TrendingDown, DollarSign } from "lucide-react";
 export default function ProblemSection() {
   return (
     <div id="problem" className="w-full">
-      {/* PROBLEM PART 1: THE BIG NUMBERS (Maximal Whitespace & Huge Numerals) */}
+      {/* PROBLEM PART 1: THE BIG NUMBERS (Floating Content, Zero Card Chrome) */}
       <section className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-24">
           <p className="text-xs font-mono uppercase tracking-widest text-accent">
             The Kirana Scale
           </p>
@@ -16,11 +16,11 @@ export default function ProblemSection() {
           </h2>
         </div>
 
-        {/* 3 Massive Number Focal Points */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16 text-center">
+        {/* 3 Massive Numbers Floating with Generous Spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 sm:gap-20 text-center">
           
-          <div className="space-y-4 p-8 rounded-2xl bg-surface hairline-all">
-            <h3 className="text-6xl sm:text-7xl font-display font-black text-accent tracking-tight">
+          <div className="space-y-4">
+            <h3 className="text-6xl sm:text-7xl lg:text-8xl font-display font-black text-accent tracking-tight">
               13M+
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">
@@ -28,8 +28,8 @@ export default function ProblemSection() {
             </p>
           </div>
 
-          <div className="space-y-4 p-8 rounded-2xl bg-surface hairline-all">
-            <h3 className="text-6xl sm:text-7xl font-display font-black text-accent tracking-tight">
+          <div className="space-y-4">
+            <h3 className="text-6xl sm:text-7xl lg:text-8xl font-display font-black text-accent tracking-tight">
               ~90%
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">
@@ -37,8 +37,8 @@ export default function ProblemSection() {
             </p>
           </div>
 
-          <div className="space-y-4 p-8 rounded-2xl bg-surface hairline-all">
-            <h3 className="text-6xl sm:text-7xl font-display font-black text-accent tracking-tight">
+          <div className="space-y-4">
+            <h3 className="text-6xl sm:text-7xl lg:text-8xl font-display font-black text-accent tracking-tight">
               ~11%
             </h3>
             <p className="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">
@@ -49,9 +49,9 @@ export default function ProblemSection() {
         </div>
       </section>
 
-      {/* PROBLEM PART 2: THE NARRATIVE & PAIN POINTS (Distinct Calm Scroll Moment) */}
+      {/* PROBLEM PART 2: THE NARRATIVE & PAIN POINTS (Floating Content, Zero Card Chrome) */}
       <section className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           
           {/* Left Split Heading */}
           <div className="lg:col-span-5 space-y-6">
@@ -66,13 +66,13 @@ export default function ProblemSection() {
             </p>
           </div>
 
-          {/* Right Cards: The Core Frictions */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* Right Floating Frictions (No Bounding Box Containers) */}
+          <div className="lg:col-span-7 space-y-12">
             
-            <div className="p-8 rounded-2xl bg-surface hairline-all space-y-3">
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <DollarSign className="w-5 h-5 text-accent" />
-                <h3 className="text-xl font-display font-bold text-text-primary">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
                   Overstock Capital Lockup &amp; Spoilage
                 </h3>
               </div>
@@ -81,10 +81,10 @@ export default function ProblemSection() {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-surface hairline-all space-y-3">
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <TrendingDown className="w-5 h-5 text-accent" />
-                <h3 className="text-xl font-display font-bold text-text-primary">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
                   Understock &amp; Customer Defection
                 </h3>
               </div>
@@ -93,10 +93,10 @@ export default function ProblemSection() {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-surface hairline-all space-y-3">
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="w-5 h-5 text-accent" />
-                <h3 className="text-xl font-display font-bold text-text-primary">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
                   No Tool Built for Single-Owner Scale
                 </h3>
               </div>

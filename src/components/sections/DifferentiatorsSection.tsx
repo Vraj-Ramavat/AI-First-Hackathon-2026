@@ -35,19 +35,18 @@ export default function DifferentiatorsSection() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Floating Differentiators (No Box Containers) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16">
         {differentiators.map((diff, index) => {
           const IconComp = diff.icon;
           return (
             <div
               key={index}
-              className="p-8 sm:p-10 rounded-3xl bg-surface hairline-all space-y-6 flex flex-col justify-between hover:border-accent/30 transition-all duration-300"
+              className="space-y-6 flex flex-col justify-between"
             >
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-base hairline-all flex items-center justify-center">
-                  <IconComp className="w-6 h-6 text-accent" />
-                </div>
-                <h3 className="text-xl font-display font-bold text-text-primary">
+                <IconComp className="w-6 h-6 text-accent" />
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
                   {diff.title}
                 </h3>
                 <p className="text-sm text-text-secondary leading-relaxed">
@@ -55,7 +54,7 @@ export default function DifferentiatorsSection() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-white/5 text-xs font-mono text-accent">
+              <div className="pt-4 text-xs font-mono text-accent">
                 Kirana First Advantage
               </div>
             </div>

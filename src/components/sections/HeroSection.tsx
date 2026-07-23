@@ -1,136 +1,123 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Camera, Sparkles, ArrowRight } from "lucide-react";
 import MouseReveal from "@/src/components/MouseReveal";
 
+// Dynamically import Hero3DCanvas with SSR disabled for clean client-side WebGL rendering
+const Hero3DCanvas = dynamic(() => import("@/src/components/Hero3DCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full aspect-[4/5] sm:aspect-[1/1] lg:aspect-[4/5] rounded-3xl bg-surface-2/40 animate-pulse border border-white/5" />
+  ),
+});
+
 export default function HeroSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 px-6 sm:px-8 max-w-7xl mx-auto">
-      {/* Upper Badge */}
-      <div className="flex justify-start mb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2 hairline-all text-xs font-mono text-text-secondary">
+    <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-24 px-6 sm:px-8 max-w-7xl mx-auto">
+      {/* Upper Hackathon Badge */}
+      <div className="flex justify-start mb-8">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2/60 hairline-all text-xs font-mono text-text-secondary">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
-          <span>IIT Jammu I3C Summer School &apos;26 Hackathon • Track: AI for Industry</span>
+          <span>IIT Jammu I3C Summer School &apos;26 Hackathon • Team Pixel Error</span>
         </div>
       </div>
 
-      {/* Main Display Headline & Tagline */}
-      <div className="max-w-4xl space-y-6 mb-12">
-        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-extrabold text-text-primary tracking-tight leading-[0.95]">
-          AI that reads shelves, <span className="text-accent">predicts demand</span>, &amp; alerts Kiranas.
-        </h1>
-        <p className="text-lg sm:text-xl text-text-secondary max-w-2xl font-normal leading-relaxed">
-          Zero barcodes. Zero POS hardware. A phone camera snaps a shelf photo, computer vision estimates stock levels, and automated WhatsApp alerts trigger before items run out.
-        </p>
+      {/* Hero Grid: Left Content, Right Dominant 3D Object Visual */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-16">
+        
+        {/* Left Column: Headlines & CTAs */}
+        <div className="lg:col-span-7 space-y-8">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-extrabold text-text-primary tracking-tight leading-[0.95]">
+            AI that reads shelves, <span className="text-accent">predicts demand</span>, &amp; alerts Kiranas.
+          </h1>
+          <p className="text-lg sm:text-xl text-text-secondary max-w-2xl font-normal leading-relaxed">
+            Zero barcodes. Zero POS hardware. A phone camera snaps a shelf photo, computer vision estimates stock levels, and automated WhatsApp alerts trigger before items run out.
+          </p>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center gap-4 pt-2">
-          <a
-            href="#demo"
-            className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-accent text-base font-semibold text-text-primary hover:bg-accent-hover transition-all shadow-lg shadow-accent/10"
-          >
-            <Camera className="w-4 h-4 text-base" />
-            <span>Try Interactive Scanner</span>
-          </a>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface hairline-all text-text-primary hover:bg-surface-2 transition-all"
-          >
-            <span>View Live Dashboard</span>
-            <ArrowRight className="w-4 h-4 text-accent" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Hero Dominant Focal Point: Smartphone Kirana Shelf Scan Mockup with MouseReveal */}
-      <div className="w-full mt-6">
-        <MouseReveal className="w-full rounded-2xl bg-surface hairline-all p-4 sm:p-8 relative">
-          <div className="relative w-full aspect-[16/9] max-h-[520px] rounded-xl bg-base overflow-hidden flex items-center justify-center border border-white/5">
-            
-            {/* Mockup Kirana Shelf Visual Representation */}
-            <div className="absolute inset-0 bg-[radial-gradient(#1C1915_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
-
-            {/* Simulated Shelves & Products */}
-            <div className="relative z-10 w-full max-w-4xl px-4 grid grid-cols-3 sm:grid-cols-4 gap-4 sm:gap-6 items-center">
-              
-              {/* Product Card 1: Maggi */}
-              <div className="relative group bg-surface-2 p-3 sm:p-4 rounded-xl hairline-all flex flex-col items-center justify-between text-center space-y-2">
-                <div className="w-full h-24 sm:h-32 bg-amber-900/20 rounded-lg flex items-center justify-center relative overflow-hidden border border-amber-500/20">
-                  <span className="font-bold text-amber-200 text-xs sm:text-sm">Maggi 70g</span>
-                  <div className="absolute top-2 right-2 bg-red-500/20 text-red-400 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">
-                    12% FULL
-                  </div>
-                  {/* Bounding Box Accent */}
-                  <div className="absolute inset-1 border border-dashed border-red-500/50 rounded pointer-events-none" />
-                </div>
-                <div className="w-full text-left">
-                  <p className="text-[11px] font-mono text-text-secondary">Est. Stock: 8 units</p>
-                  <p className="text-[10px] text-red-400 font-mono">Stockout in 1.2 days</p>
-                </div>
-              </div>
-
-              {/* Product Card 2: Parle-G */}
-              <div className="relative group bg-surface-2 p-3 sm:p-4 rounded-xl hairline-all flex flex-col items-center justify-between text-center space-y-2">
-                <div className="w-full h-24 sm:h-32 bg-yellow-900/20 rounded-lg flex items-center justify-center relative overflow-hidden border border-yellow-500/20">
-                  <span className="font-bold text-yellow-200 text-xs sm:text-sm">Parle-G 80g</span>
-                  <div className="absolute top-2 right-2 bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">
-                    35% FULL
-                  </div>
-                  <div className="absolute inset-1 border border-dashed border-amber-500/50 rounded pointer-events-none" />
-                </div>
-                <div className="w-full text-left">
-                  <p className="text-[11px] font-mono text-text-secondary">Est. Stock: 24 units</p>
-                  <p className="text-[10px] text-amber-400 font-mono">Reorder in 2 days</p>
-                </div>
-              </div>
-
-              {/* Product Card 3: Amul Milk */}
-              <div className="relative group bg-surface-2 p-3 sm:p-4 rounded-xl hairline-all flex flex-col items-center justify-between text-center space-y-2">
-                <div className="w-full h-24 sm:h-32 bg-blue-900/20 rounded-lg flex items-center justify-center relative overflow-hidden border border-blue-500/20">
-                  <span className="font-bold text-blue-200 text-xs sm:text-sm">Amul Milk 500ml</span>
-                  <div className="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">
-                    85% FULL
-                  </div>
-                  <div className="absolute inset-1 border border-dashed border-emerald-500/50 rounded pointer-events-none" />
-                </div>
-                <div className="w-full text-left">
-                  <p className="text-[11px] font-mono text-text-secondary">Est. Stock: 42 units</p>
-                  <p className="text-[10px] text-emerald-400 font-mono">Healthy Stock</p>
-                </div>
-              </div>
-
-              {/* Product Card 4: Tata Salt (Hidden on mobile) */}
-              <div className="hidden sm:flex relative group bg-surface-2 p-3 sm:p-4 rounded-xl hairline-all flex-col items-center justify-between text-center space-y-2">
-                <div className="w-full h-24 sm:h-32 bg-gray-800/40 rounded-lg flex items-center justify-center relative overflow-hidden border border-gray-500/20">
-                  <span className="font-bold text-gray-200 text-xs sm:text-sm">Tata Salt 1kg</span>
-                  <div className="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">
-                    90% FULL
-                  </div>
-                  <div className="absolute inset-1 border border-dashed border-emerald-500/50 rounded pointer-events-none" />
-                </div>
-                <div className="w-full text-left">
-                  <p className="text-[11px] font-mono text-text-secondary">Est. Stock: 50 units</p>
-                  <p className="text-[10px] text-emerald-400 font-mono">Healthy Stock</p>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Scanning Line Animation Overlay */}
-            <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-accent to-transparent animate-scan-line pointer-events-none opacity-80" />
-
-            {/* Overlay Corner Hud Labels */}
-            <div className="absolute top-4 left-4 bg-base/80 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 text-xs font-mono text-text-secondary flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span>CV Model Live Analysis</span>
-            </div>
-
-            <div className="absolute bottom-4 right-4 bg-base/80 backdrop-blur px-3 py-1.5 rounded-full border border-white/10 text-xs font-mono text-accent">
-              Hover mouse to reveal spotlight
-            </div>
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <a
+              href="#demo"
+              className="inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-accent text-base font-semibold text-text-primary hover:bg-accent-hover transition-all shadow-lg shadow-accent/10"
+            >
+              <Camera className="w-4 h-4 text-base" />
+              <span>Try Interactive Scanner</span>
+            </a>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface-2/60 hairline-all text-text-primary hover:bg-surface-2 transition-all"
+            >
+              <span>View Live Dashboard</span>
+              <ArrowRight className="w-4 h-4 text-accent" />
+            </Link>
           </div>
-        </MouseReveal>
+        </div>
+
+        {/* Right Column: Dominant 3D R3F Object (Desktop) / Static CSS Fallback (Mobile) */}
+        <div className="lg:col-span-5 w-full">
+          {!isMobile ? (
+            /* Desktop R3F 3D Canvas Object */
+            <Hero3DCanvas />
+          ) : (
+            /* Mobile Static Fallback Visual */
+            <MouseReveal className="w-full rounded-3xl relative p-1">
+              <div className="relative w-full aspect-[4/5] rounded-2xl bg-gradient-to-b from-surface-2/80 via-surface/40 to-base p-6 flex flex-col justify-between overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(#C9A84C_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
+
+                <div className="relative z-10 flex items-center justify-between">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-base/90 text-[11px] font-mono text-text-secondary">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                    <span>CV Model Shelf Scan</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-accent">96.8% Acc</span>
+                </div>
+
+                <div className="relative z-10 my-auto space-y-3">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-base/60 backdrop-blur border-b border-white/5">
+                    <div>
+                      <p className="text-xs font-bold text-text-primary">Maggi 70g Masala</p>
+                      <p className="text-[10px] font-mono text-text-secondary">Est. Stock: 8 units</p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-red-400">12% FULL</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-base/60 backdrop-blur border-b border-white/5">
+                    <div>
+                      <p className="text-xs font-bold text-text-primary">Parle-G 80g Biscuit</p>
+                      <p className="text-[10px] font-mono text-text-secondary">Est. Stock: 24 units</p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-amber-400">35% FULL</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-base/60 backdrop-blur border-b border-white/5">
+                    <div>
+                      <p className="text-xs font-bold text-text-primary">Amul Milk 500ml</p>
+                      <p className="text-[10px] font-mono text-text-secondary">Est. Stock: 42 pouches</p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-emerald-400">85% FULL</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 text-center text-[10px] font-mono text-text-secondary/70">
+                  Kirana Inventory Intelligence
+                </div>
+              </div>
+            </MouseReveal>
+          )}
+        </div>
+
       </div>
     </section>
   );

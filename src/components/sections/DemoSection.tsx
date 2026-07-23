@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Camera, Sparkles, Check, Send, RotateCcw } from "lucide-react";
 import WhatsAppBubble from "@/src/components/WhatsAppBubble";
+
+// SSR-safe dynamic import for Demo 3D Canvas Accent
+const Demo3DCanvas = dynamic(() => import("@/src/components/Demo3DCanvas"), {
+  ssr: false,
+  loading: () => <div className="w-16 h-16 rounded-xl bg-surface-2/30 animate-pulse shrink-0" />,
+});
 
 interface ShelfSample {
   id: string;
@@ -14,16 +21,25 @@ interface ShelfSample {
 }
 
 export default function DemoSection() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const samples: ShelfSample[] = [
     {
       id: "maggi",
       title: "Maggi & Noodles Shelf",
       category: "Snacks & Instant Food",
-      imageBg: "from-amber-900/30 via-amber-950/20 to-base",
+      imageBg: "from-amber-950/20 via-base to-base",
       itemsDetected: [
-        { name: "Maggi 70g Masala Noodles", estimatedStock: "8 pkts", fillPercent: 12, urgency: "CRITICAL" },
-        { name: "Yippee 60g Noodles", estimatedStock: "28 pkts", fillPercent: 45, urgency: "LOW" },
-        { name: "Knorr Soups", estimatedStock: "42 pkts", fillPercent: 80, urgency: "HEALTHY" },
+        { name: "Maggi 70g Masala Noodles", estimatedStock: "8 pkts left", fillPercent: 12, urgency: "CRITICAL" },
+        { name: "Yippee 60g Noodles", estimatedStock: "28 pkts left", fillPercent: 45, urgency: "LOW" },
+        { name: "Knorr Instant Soups", estimatedStock: "42 pkts left", fillPercent: 80, urgency: "HEALTHY" },
       ],
       reorderDraft: [
         { name: "Maggi 70g Masala Noodles", qty: "48 pkts (2 crates)", alertType: "CRITICAL" },
@@ -34,11 +50,11 @@ export default function DemoSection() {
       id: "parleg",
       title: "Parle-G & Biscuits Rack",
       category: "Biscuits & Bakery",
-      imageBg: "from-yellow-900/30 via-yellow-950/20 to-base",
+      imageBg: "from-yellow-950/20 via-base to-base",
       itemsDetected: [
-        { name: "Parle-G 80g Biscuit", estimatedStock: "18 pkts", fillPercent: 22, urgency: "CRITICAL" },
-        { name: "Britannia Good Day 100g", estimatedStock: "35 pkts", fillPercent: 60, urgency: "HEALTHY" },
-        { name: "Monaco 75g Biscuit", estimatedStock: "12 pkts", fillPercent: 28, urgency: "LOW" },
+        { name: "Parle-G 80g Biscuit", estimatedStock: "18 pkts left", fillPercent: 22, urgency: "CRITICAL" },
+        { name: "Britannia Good Day 100g", estimatedStock: "35 pkts left", fillPercent: 60, urgency: "HEALTHY" },
+        { name: "Monaco 75g Biscuit", estimatedStock: "12 pkts left", fillPercent: 28, urgency: "LOW" },
       ],
       reorderDraft: [
         { name: "Parle-G 80g Biscuit", qty: "60 pkts (3 cartons)", alertType: "CRITICAL" },
@@ -49,11 +65,11 @@ export default function DemoSection() {
       id: "amul",
       title: "Amul Milk & Dairy Chiller",
       category: "Dairy & Perishables",
-      imageBg: "from-blue-900/30 via-blue-950/20 to-base",
+      imageBg: "from-blue-950/20 via-base to-base",
       itemsDetected: [
-        { name: "Amul Taaza Milk 500ml", estimatedStock: "6 pouches", fillPercent: 10, urgency: "CRITICAL" },
-        { name: "Amul Butter 100g", estimatedStock: "15 units", fillPercent: 40, urgency: "LOW" },
-        { name: "Amul Curd 400g Pouch", estimatedStock: "24 units", fillPercent: 75, urgency: "HEALTHY" },
+        { name: "Amul Taaza Milk 500ml", estimatedStock: "6 pouches left", fillPercent: 10, urgency: "CRITICAL" },
+        { name: "Amul Butter 100g", estimatedStock: "15 units left", fillPercent: 40, urgency: "LOW" },
+        { name: "Amul Curd 400g Pouch", estimatedStock: "24 units left", fillPercent: 75, urgency: "HEALTHY" },
       ],
       reorderDraft: [
         { name: "Amul Taaza Milk 500ml", qty: "40 pouches (2 crates)", alertType: "CRITICAL" },
@@ -81,16 +97,20 @@ export default function DemoSection() {
   return (
     <section id="demo" className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-16 my-8">
       {/* Section Header */}
-      <div className="max-w-3xl space-y-4">
-        <p className="text-xs font-mono uppercase tracking-widest text-accent">
-          Interactive Live Simulator
-        </p>
-        <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary tracking-tight">
-          Snap a shelf. Watch computer vision scan &amp; trigger WhatsApp reorders.
-        </h2>
-        <p className="text-text-secondary text-sm sm:text-base leading-relaxed">
-          Select a sample Kirana shelf below to simulate StockSaathi&apos;s computer vision inference and automated supplier ordering workflow in real-time.
-        </p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="max-w-3xl space-y-4">
+          <p className="text-xs font-mono uppercase tracking-widest text-accent">
+            Interactive Live Simulator
+          </p>
+          <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary tracking-tight">
+            Snap a shelf. Watch computer vision scan &amp; trigger WhatsApp reorders.
+          </h2>
+          <p className="text-text-secondary text-sm sm:text-base leading-relaxed">
+            Select a sample Kirana shelf below to simulate StockSaathi&apos;s computer vision inference and automated supplier ordering workflow in real-time.
+          </p>
+        </div>
+
+        {!isMobile && <Demo3DCanvas />}
       </div>
 
       {/* Sample Selector Buttons */}
@@ -102,10 +122,10 @@ export default function DemoSection() {
               setSelectedSample(sample);
               setOrderSent(false);
             }}
-            className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all ${
+            className={`px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all ${
               selectedSample.id === sample.id
                 ? "bg-accent text-base font-bold shadow-md shadow-accent/10"
-                : "bg-surface hairline-all text-text-secondary hover:text-text-primary hover:bg-surface-2"
+                : "text-text-secondary hover:text-text-primary hover:bg-surface-2"
             }`}
           >
             {sample.title}
@@ -113,12 +133,11 @@ export default function DemoSection() {
         ))}
       </div>
 
-      {/* Main Interactive Demo Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      {/* Main Interactive Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         
-        {/* Left Column: Simulated Camera Scanner Mockup */}
-        <div className="lg:col-span-7 rounded-3xl bg-surface hairline-all p-6 sm:p-8 flex flex-col justify-between space-y-6">
-          
+        {/* Left Column: Simulated Camera Scanner */}
+        <div className="lg:col-span-7 space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div className="flex items-center gap-2">
               <Camera className="w-4 h-4 text-accent" />
@@ -129,7 +148,7 @@ export default function DemoSection() {
             <button
               onClick={handleScan}
               disabled={isScanning}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-2 hairline-all text-xs font-mono text-accent hover:bg-accent/10 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 text-xs font-mono text-accent hover:underline transition-colors disabled:opacity-50"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${isScanning ? "animate-spin" : ""}`} />
               <span>Rescan Photo</span>
@@ -137,75 +156,61 @@ export default function DemoSection() {
           </div>
 
           {/* Scanner Viewport */}
-          <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-br ${selectedSample.imageBg} hairline-all p-6 flex flex-col justify-between overflow-hidden`}>
+          <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-b ${selectedSample.imageBg} hairline-all p-6 flex flex-col justify-between overflow-hidden`}>
             
-            {/* Simulated Shelf Visual Background */}
-            <div className="absolute inset-0 bg-[radial-gradient(#1C1915_1px,transparent_1px)] [background-size:16px_16px] opacity-30" />
-
-            {/* Scanning Line Effect during scan */}
+            {/* Scanning Line */}
             {isScanning && (
               <div className="absolute inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-accent to-transparent animate-scan-line z-20" />
             )}
 
             {/* Top HUD overlay */}
             <div className="relative z-10 flex items-center justify-between text-xs font-mono text-text-secondary">
-              <span className="bg-base/80 backdrop-blur px-2.5 py-1 rounded-md border border-white/10">
-                Resolution: 1080p
+              <span className="bg-base/80 px-2.5 py-1 rounded border border-white/10">
+                1080p Lens Feed
               </span>
-              <span className="bg-base/80 backdrop-blur px-2.5 py-1 rounded-md border border-white/10 text-accent">
-                {isScanning ? "Running CV Inference..." : "Scan Complete"}
+              <span className="text-accent">
+                {isScanning ? "Running CV Model..." : "Inference Ready"}
               </span>
             </div>
 
-            {/* Shelf Items Overlay Bounding Boxes */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 my-auto">
+            {/* De-chromed Product Status Items */}
+            <div className="relative z-10 space-y-3 my-auto">
               {selectedSample.itemsDetected.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`p-3 rounded-xl backdrop-blur transition-all duration-500 border ${
-                    hasScanned ? "bg-base/85 opacity-100 scale-100" : "opacity-40 scale-95"
-                  } ${
-                    item.urgency === "CRITICAL"
-                      ? "border-red-500/50 shadow-lg shadow-red-500/10"
-                      : item.urgency === "LOW"
-                      ? "border-amber-500/50"
-                      : "border-emerald-500/30"
+                  className={`flex items-center justify-between p-3.5 rounded-xl bg-base/85 backdrop-blur transition-all duration-300 ${
+                    hasScanned ? "opacity-100 scale-100" : "opacity-40 scale-95"
                   }`}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-[11px] font-bold text-text-primary leading-tight">
-                      {item.name}
-                    </span>
+                  <div>
+                    <p className="text-xs font-bold text-text-primary">{item.name}</p>
+                    <p className="text-[10px] font-mono text-text-secondary">{item.estimatedStock}</p>
+                  </div>
+
+                  <div className="text-right">
                     <span
-                      className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
+                      className={`text-xs font-mono font-bold block ${
                         item.urgency === "CRITICAL"
-                          ? "bg-red-500/20 text-red-400"
+                          ? "text-red-400"
                           : item.urgency === "LOW"
-                          ? "bg-amber-500/20 text-amber-400"
-                          : "bg-emerald-500/20 text-emerald-400"
+                          ? "text-amber-400"
+                          : "text-emerald-400"
                       }`}
                     >
                       {item.fillPercent}% FULL
                     </span>
-                  </div>
-
-                  {/* Stock Fill Progress Bar */}
-                  <div className="w-full h-1.5 bg-surface-2 rounded-full overflow-hidden mb-2">
-                    <div
-                      className={`h-full transition-all duration-1000 ${
+                    <span
+                      className={`text-[10px] font-mono uppercase ${
                         item.urgency === "CRITICAL"
-                          ? "bg-red-500"
+                          ? "text-red-400/80"
                           : item.urgency === "LOW"
-                          ? "bg-amber-500"
-                          : "bg-emerald-500"
+                          ? "text-amber-400/80"
+                          : "text-emerald-400/80"
                       }`}
-                      style={{ width: `${item.fillPercent}%` }}
-                    />
+                    >
+                      {item.urgency}
+                    </span>
                   </div>
-
-                  <p className="text-[10px] font-mono text-text-secondary">
-                    Est. Stock: <span className="text-text-primary font-bold">{item.estimatedStock}</span>
-                  </p>
                 </div>
               ))}
             </div>
@@ -213,25 +218,25 @@ export default function DemoSection() {
             {/* Bottom HUD */}
             <div className="relative z-10 flex items-center justify-between text-xs font-mono text-text-secondary">
               <span>Model: Kirana-CV-v2.1</span>
-              <span>Confidence: 96.8%</span>
+              <span>Accuracy: 96.8%</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-text-secondary">
             <Sparkles className="w-4 h-4 text-accent shrink-0" />
-            <span>AI calculates stock levels directly from packaging volume—no manual scanning required.</span>
+            <span>Estimates fullness directly from visual volume—no barcode guns required.</span>
           </div>
 
         </div>
 
         {/* Right Column: Automated WhatsApp Reorder Alert Preview */}
-        <div className="lg:col-span-5 rounded-3xl bg-surface hairline-all p-6 sm:p-8 flex flex-col justify-between space-y-6">
+        <div className="lg:col-span-5 space-y-6">
           
           <div className="space-y-2 border-b border-white/10 pb-4">
             <p className="text-xs font-mono text-accent uppercase tracking-wider">
               Step 3 Result • Auto Decision Engine
             </p>
-            <h3 className="text-xl font-display font-bold text-text-primary">
+            <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
               Generated WhatsApp Reorder Alert
             </h3>
             <p className="text-xs text-text-secondary">
@@ -239,10 +244,10 @@ export default function DemoSection() {
             </p>
           </div>
 
-          {/* WhatsApp Authentic Preview */}
+          {/* Authentic WhatsApp Bubble */}
           <div className="flex justify-center py-2">
             <WhatsAppBubble
-              storeName="Gupta Kirana Store (Ahmadabad)"
+              storeName="Gupta Kirana Store (Ahmedabad)"
               supplierName="Mahalakshmi Wholesale FMCG"
               items={selectedSample.reorderDraft}
               timestamp="Just now"
@@ -250,12 +255,12 @@ export default function DemoSection() {
             />
           </div>
 
-          {/* Reorder Action Simulator */}
+          {/* Action Button */}
           <div className="space-y-3 pt-2">
             {orderSent ? (
-              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-xs text-emerald-400 font-mono">
-                <Check className="w-4 h-4 shrink-0" />
-                <span>WhatsApp reorder successfully transmitted to wholesaler!</span>
+              <div className="p-3.5 rounded-xl text-xs text-emerald-400 font-mono flex items-center gap-2">
+                <Check className="w-4 h-4 shrink-0 text-emerald-400" />
+                <span>WhatsApp reorder transmitted to wholesaler!</span>
               </div>
             ) : (
               <button
@@ -268,7 +273,7 @@ export default function DemoSection() {
             )}
 
             <p className="text-[11px] text-text-secondary text-center">
-              Requires 1-tap confirmation from the store owner to avoid unwanted orders.
+              Requires 1-tap confirmation from shopkeeper.
             </p>
           </div>
 
