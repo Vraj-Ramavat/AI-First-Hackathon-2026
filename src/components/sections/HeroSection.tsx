@@ -27,7 +27,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-24 px-6 sm:px-8 max-w-7xl mx-auto">
+    <section className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-center pt-24 sm:pt-28 pb-16 px-6 sm:px-8 max-w-7xl mx-auto">
       {/* Upper Hackathon Badge */}
       <div className="flex justify-start mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2/60 hairline-all text-xs font-mono text-text-secondary">
@@ -40,8 +40,8 @@ export default function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-16">
         
         {/* Left Column: Headlines & CTAs */}
-        <div className="lg:col-span-7 space-y-8">
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-extrabold text-text-primary tracking-tight leading-[0.95]">
+        <div className="lg:col-span-7 space-y-6">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-text-primary tracking-tight leading-[1.0] mt-2">
             AI that reads shelves, <span className="text-accent">predicts demand</span>, &amp; alerts Kiranas.
           </h1>
           <p className="text-lg sm:text-xl text-text-secondary max-w-2xl font-normal leading-relaxed">

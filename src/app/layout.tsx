@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
+import Providers from "@/src/components/Providers";
 import "./globals.css";
 
 const fontDisplay = Outfit({
@@ -42,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fontDisplay.variable} ${fontSans.variable} scroll-smooth`}>
       <body className="bg-base text-text-primary antialiased min-h-screen selection:bg-accent selection:text-base">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

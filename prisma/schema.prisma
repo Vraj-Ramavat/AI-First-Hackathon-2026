@@ -1,0 +1,72 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  passwordHash String      @map("password_hash")
+  name         String?
+  createdAt    DateTime    @default(now()) @map("created_at")
+  userStores   UserStore[]
+
+  @@map("users")
+}
+
+model Store {
+  id         String      @id @default(cuid())
+  name       String
+  location   String?
+  createdAt  DateTime    @default(now()) @map("created_at")
+  userStores UserStore[]
+  products   Product[]
+
+  @@map("stores")
+}
+
+model UserStore {
+  userId    String   @map("user_id")
+  storeId   String   @map("store_id")
+  role      String   @default("owner")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, storeId])
+  @@map("user_stores")
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  storeId           String   @map("store_id")
+  name              String
+  sku               String?
+  category          String?
+  quantity          Int      @default(0)
+  unit              String   @default("pkts")
+  price             Float?   @default(0.0)
+  lowStockThreshold Int      @default(15) @map("low_stock_threshold")
+  stockLevelPercent Int      @default(100) @map("stock_level_percent")
+  status            String   @default("IN_STOCK")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+}
+
+model LoginAttempt {
+  id          String   @id @default(cuid())
+  email       String
+  ip          String?
+  attemptedAt DateTime @default(now()) @map("attempted_at")
+
+  @@map("login_attempts")
+}

@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ArrowUpRight, User } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,10 +19,8 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled
-          ? "bg-base/90 backdrop-blur-md hairline-b py-4"
-          : "bg-transparent py-6"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-base/90 backdrop-blur-md hairline-b ${
+        scrolled ? "py-4 shadow-lg shadow-black/40" : "py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
@@ -75,7 +75,21 @@ export default function Navbar() {
         </nav>
 
         {/* Action Button Right */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {!session ? (
+            <Link
+              href="/auth/login"
+              className="text-xs font-mono text-text-secondary hover:text-text-primary px-3 py-1.5 transition-colors"
+            >
+              Sign In
+            </Link>
+          ) : (
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
+              <User className="w-3 h-3" />
+              <span>{session.user?.name || "Logged In"}</span>
+            </span>
+          )}
+
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono tracking-wider uppercase border border-accent/40 text-accent hover:bg-accent/10 transition-all"

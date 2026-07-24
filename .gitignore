@@ -18,7 +18,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# env files (NEVER COMMIT REAL SECRETS)
+.env
+.env.local
 .env*.local
 
 # Vercel
@@ -27,3 +29,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# media
+*.mp4
+
+# SQLite
+*.db
+*.db-journal
