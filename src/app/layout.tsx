@@ -16,7 +16,7 @@ const fontSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "StockSaathi | AI Inventory Intelligence for Kirana Stores",
+  title: "StockSaathi",
   description:
     "AI that reads shelves, predicts demand, and messages Kirana store owners before they run out of stock. Built for Summer School '26 AI First Hackathon by Team Pixel Error.",
   keywords: [
