@@ -24,20 +24,33 @@ function CameraController({ scrollProgress }: { scrollProgress: number }) {
   const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
 
   useFrame((state) => {
+    if (!anchors || anchors.length === 0) return;
+
+    // Normalize progress between 0 and 1
+    const clampedProgress = Math.min(Math.max(0, scrollProgress), 1);
     const totalSegments = anchors.length - 1;
-    const scaled = scrollProgress * totalSegments;
+    const scaled = clampedProgress * totalSegments;
+
+    // Safely clamp index so it never runs past the array bounds
     const index = Math.min(Math.floor(scaled), totalSegments - 1);
     const alpha = scaled - index;
 
-    const currAnchor = anchors[index];
-    const nextAnchor = anchors[index + 1] || currAnchor;
+    // Safe fallbacks so currAnchor and nextAnchor are never undefined
+    const currAnchor = anchors[index] || anchors[0];
+    const nextAnchor = anchors[Math.min(index + 1, totalSegments)] || currAnchor;
 
+    if (!currAnchor?.pos || !nextAnchor?.pos) return;
+
+    // Lerp Camera Position
     const targetPos = new THREE.Vector3().lerpVectors(currAnchor.pos, nextAnchor.pos, alpha);
     state.camera.position.lerp(targetPos, 0.08);
 
-    const targetLookAt = new THREE.Vector3().lerpVectors(currAnchor.lookAt, nextAnchor.lookAt, alpha);
-    currentLookAt.current.lerp(targetLookAt, 0.08);
-    state.camera.lookAt(currentLookAt.current);
+    // Lerp Camera Target / LookAt
+    if (currAnchor.lookAt && nextAnchor.lookAt) {
+      const targetLookAt = new THREE.Vector3().lerpVectors(currAnchor.lookAt, nextAnchor.lookAt, alpha);
+      currentLookAt.current.lerp(targetLookAt, 0.08);
+      state.camera.lookAt(currentLookAt.current);
+    }
   });
 
   return null;

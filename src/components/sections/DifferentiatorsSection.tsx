@@ -25,36 +25,36 @@ export default function DifferentiatorsSection() {
   ];
 
   return (
-    <section className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-20">
-      <div className="max-w-3xl space-y-4">
+    <section className="py-8 sm:py-12 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-10">
+      <div className="max-w-3xl space-y-3">
         <p className="text-xs font-mono uppercase tracking-widest text-accent">
           Why StockSaathi Stands Apart
         </p>
-        <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary tracking-tight">
+        <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-text-primary tracking-tight">
           Engineered for Kirana reality, not enterprise boardrooms.
         </h2>
       </div>
 
-      {/* Floating Differentiators (No Box Containers) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-16">
+      {/* Floating Differentiators */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
         {differentiators.map((diff, index) => {
           const IconComp = diff.icon;
           return (
             <div
               key={index}
-              className="space-y-6 flex flex-col justify-between"
+              className="space-y-4 flex flex-col justify-between"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <IconComp className="w-6 h-6 text-accent" />
-                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
+                <h3 className="text-lg sm:text-xl font-display font-bold text-text-primary">
                   {diff.title}
                 </h3>
-                <p className="text-sm text-text-secondary leading-relaxed">
+                <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
                   {diff.description}
                 </p>
               </div>
 
-              <div className="pt-4 text-xs font-mono text-accent">
+              <div className="pt-2 text-[10px] font-mono text-accent">
                 Kirana First Advantage
               </div>
             </div>

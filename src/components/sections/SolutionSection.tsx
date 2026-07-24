@@ -4,10 +4,9 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Camera, TrendingUp, MessageSquare, ArrowRight } from "lucide-react";
 
-// SSR-safe dynamic import for R3F Pillar 3D Canvas
 const Pillar3DCanvas = dynamic(() => import("@/src/components/Pillar3DCanvas"), {
   ssr: false,
-  loading: () => <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-surface-2/40 animate-pulse shrink-0" />,
+  loading: () => <div className="w-20 h-20 rounded-2xl bg-surface-2/40 animate-pulse shrink-0" />,
 });
 
 export default function SolutionSection() {
@@ -51,37 +50,34 @@ export default function SolutionSection() {
   ];
 
   return (
-    <section id="solution" className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-24">
-      {/* Header */}
-      <div className="max-w-3xl space-y-4">
+    <section id="solution" className="py-12 sm:py-16 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-12">
+      <div className="max-w-3xl space-y-3">
         <p className="text-xs font-mono uppercase tracking-widest text-accent">
           Three Pillars • One Phone Camera
         </p>
-        <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary tracking-tight">
+        <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-text-primary tracking-tight">
           How StockSaathi transforms shelf photos into timely reorder messages.
         </h2>
       </div>
 
-      {/* 3 Solution Pillars with 3D Object Accents */}
-      <div className="space-y-16">
+      <div className="space-y-8">
         {pillars.map((pillar) => {
           const IconComponent = pillar.icon;
           return (
             <div
               key={pillar.step}
-              className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start py-8 hairline-b last:border-b-0"
+              className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start py-6 hairline-b last:border-b-0"
             >
-              {/* 3D Canvas Element / Step Numeral */}
               <div className="md:col-span-3 flex items-center gap-4">
                 {!isMobile ? (
                   <Pillar3DCanvas pillarType={pillar.type} />
                 ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-surface-2/60 hairline-all flex items-center justify-center shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-surface-2/60 hairline-all flex items-center justify-center shrink-0">
                     <IconComponent className="w-6 h-6 text-accent" />
                   </div>
                 )}
                 <div>
-                  <span className="text-4xl font-display font-extrabold text-accent/40 font-mono block">
+                  <span className="text-3xl font-display font-extrabold text-accent/40 font-mono block">
                     {pillar.step}
                   </span>
                   <span className="text-[10px] font-mono text-text-secondary uppercase">
@@ -90,18 +86,16 @@ export default function SolutionSection() {
                 </div>
               </div>
 
-              {/* Title & Subtitle */}
               <div className="md:col-span-4 space-y-1">
                 <p className="text-xs font-mono text-accent uppercase tracking-wider">
                   {pillar.subtitle}
                 </p>
-                <h3 className="text-2xl sm:text-3xl font-display font-bold text-text-primary">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
                   {pillar.title}
                 </h3>
               </div>
 
-              {/* Description */}
-              <div className="md:col-span-5 text-text-secondary text-sm leading-relaxed">
+              <div className="md:col-span-5 text-text-secondary text-xs sm:text-sm leading-relaxed">
                 {pillar.description}
               </div>
             </div>
@@ -109,39 +103,36 @@ export default function SolutionSection() {
         })}
       </div>
 
-      {/* Flow Diagram Banner */}
-      <div className="py-12 border-t border-b border-white/5 space-y-8">
+      <div className="py-8 border-t border-b border-white/5 space-y-6">
         <p className="text-center text-xs font-mono uppercase tracking-widest text-text-secondary">
           The StockSaathi End-to-End Workflow
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-center">
-          
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
           <div className="space-y-1 w-full">
             <span className="text-xs font-mono text-accent block">STEP 1</span>
-            <p className="text-base font-semibold text-text-primary">Shelf Photo</p>
+            <p className="text-sm font-semibold text-text-primary">Shelf Photo</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
+          <ArrowRight className="w-4 h-4 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
           <div className="space-y-1 w-full">
             <span className="text-xs font-mono text-accent block">STEP 2</span>
-            <p className="text-base font-semibold text-text-primary">CV Model Reading</p>
+            <p className="text-sm font-semibold text-text-primary">CV Model Reading</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
+          <ArrowRight className="w-4 h-4 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
           <div className="space-y-1 w-full">
             <span className="text-xs font-mono text-accent block">STEP 3</span>
-            <p className="text-base font-semibold text-text-primary">Forecast Engine</p>
+            <p className="text-sm font-semibold text-text-primary">Forecast Engine</p>
           </div>
 
-          <ArrowRight className="w-5 h-5 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
+          <ArrowRight className="w-4 h-4 text-accent shrink-0 rotate-90 sm:rotate-0 opacity-60" />
 
           <div className="space-y-1 w-full">
             <span className="text-xs font-mono text-accent block">STEP 4</span>
-            <p className="text-base font-semibold text-text-primary">WhatsApp Alert</p>
+            <p className="text-sm font-semibold text-text-primary">WhatsApp Alert</p>
           </div>
-
         </div>
       </div>
     </section>

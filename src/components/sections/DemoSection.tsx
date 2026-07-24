@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { Camera, Sparkles, Check, Send, RotateCcw } from "lucide-react";
 import WhatsAppBubble from "@/src/components/WhatsAppBubble";
 
-// SSR-safe dynamic import for Demo 3D Canvas Accent
 const Demo3DCanvas = dynamic(() => import("@/src/components/Demo3DCanvas"), {
   ssr: false,
   loading: () => <div className="w-16 h-16 rounded-xl bg-surface-2/30 animate-pulse shrink-0" />,
@@ -95,17 +94,16 @@ export default function DemoSection() {
   };
 
   return (
-    <section id="demo" className="py-32 sm:py-40 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-16 my-8">
-      {/* Section Header */}
+    <section id="demo" className="py-12 sm:py-16 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="max-w-3xl space-y-4">
+        <div className="max-w-3xl space-y-3">
           <p className="text-xs font-mono uppercase tracking-widest text-accent">
             Interactive Live Simulator
           </p>
-          <h2 className="text-3xl sm:text-5xl font-display font-extrabold text-text-primary tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-text-primary tracking-tight">
             Snap a shelf. Watch computer vision scan &amp; trigger WhatsApp reorders.
           </h2>
-          <p className="text-text-secondary text-sm sm:text-base leading-relaxed">
+          <p className="text-text-secondary text-xs sm:text-sm leading-relaxed">
             Select a sample Kirana shelf below to simulate StockSaathi&apos;s computer vision inference and automated supplier ordering workflow in real-time.
           </p>
         </div>
@@ -113,7 +111,6 @@ export default function DemoSection() {
         {!isMobile && <Demo3DCanvas />}
       </div>
 
-      {/* Sample Selector Buttons */}
       <div className="flex flex-wrap items-center gap-3">
         {samples.map((sample) => (
           <button
@@ -122,7 +119,7 @@ export default function DemoSection() {
               setSelectedSample(sample);
               setOrderSent(false);
             }}
-            className={`px-4 py-2.5 rounded-full text-xs font-mono tracking-wider transition-all ${
+            className={`px-4 py-2 rounded-full text-xs font-mono tracking-wider transition-all ${
               selectedSample.id === sample.id
                 ? "bg-accent text-base font-bold shadow-md shadow-accent/10"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-2"
@@ -133,12 +130,9 @@ export default function DemoSection() {
         ))}
       </div>
 
-      {/* Main Interactive Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        
-        {/* Left Column: Simulated Camera Scanner */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="lg:col-span-7 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <Camera className="w-4 h-4 text-accent" />
               <span className="text-xs font-mono text-text-primary font-medium uppercase tracking-wider">
@@ -155,15 +149,11 @@ export default function DemoSection() {
             </button>
           </div>
 
-          {/* Scanner Viewport */}
-          <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-b ${selectedSample.imageBg} hairline-all p-6 flex flex-col justify-between overflow-hidden`}>
-            
-            {/* Scanning Line */}
+          <div className={`relative w-full aspect-[4/3] rounded-2xl bg-gradient-to-b ${selectedSample.imageBg} hairline-all p-5 flex flex-col justify-between overflow-hidden`}>
             {isScanning && (
               <div className="absolute inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-accent to-transparent animate-scan-line z-20" />
             )}
 
-            {/* Top HUD overlay */}
             <div className="relative z-10 flex items-center justify-between text-xs font-mono text-text-secondary">
               <span className="bg-base/80 px-2.5 py-1 rounded border border-white/10">
                 1080p Lens Feed
@@ -173,12 +163,11 @@ export default function DemoSection() {
               </span>
             </div>
 
-            {/* De-chromed Product Status Items */}
-            <div className="relative z-10 space-y-3 my-auto">
+            <div className="relative z-10 space-y-2.5 my-auto">
               {selectedSample.itemsDetected.map((item, idx) => (
                 <div
                   key={idx}
-                  className={`flex items-center justify-between p-3.5 rounded-xl bg-base/85 backdrop-blur transition-all duration-300 ${
+                  className={`flex items-center justify-between p-3 rounded-xl bg-base/85 backdrop-blur transition-all duration-300 ${
                     hasScanned ? "opacity-100 scale-100" : "opacity-40 scale-95"
                   }`}
                 >
@@ -215,8 +204,7 @@ export default function DemoSection() {
               ))}
             </div>
 
-            {/* Bottom HUD */}
-            <div className="relative z-10 flex items-center justify-between text-xs font-mono text-text-secondary">
+            <div className="relative z-10 flex items-center justify-between text-[11px] font-mono text-text-secondary">
               <span>Model: Kirana-CV-v2.1</span>
               <span>Accuracy: 96.8%</span>
             </div>
@@ -226,17 +214,14 @@ export default function DemoSection() {
             <Sparkles className="w-4 h-4 text-accent shrink-0" />
             <span>Estimates fullness directly from visual volume—no barcode guns required.</span>
           </div>
-
         </div>
 
-        {/* Right Column: Automated WhatsApp Reorder Alert Preview */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          <div className="space-y-2 border-b border-white/10 pb-4">
+        <div className="lg:col-span-5 space-y-4">
+          <div className="space-y-1 border-b border-white/10 pb-3">
             <p className="text-xs font-mono text-accent uppercase tracking-wider">
               Step 3 Result • Auto Decision Engine
             </p>
-            <h3 className="text-xl sm:text-2xl font-display font-bold text-text-primary">
+            <h3 className="text-lg sm:text-xl font-display font-bold text-text-primary">
               Generated WhatsApp Reorder Alert
             </h3>
             <p className="text-xs text-text-secondary">
@@ -244,8 +229,7 @@ export default function DemoSection() {
             </p>
           </div>
 
-          {/* Authentic WhatsApp Bubble */}
-          <div className="flex justify-center py-2">
+          <div className="flex justify-center py-1">
             <WhatsAppBubble
               storeName="Gupta Kirana Store (Ahmedabad)"
               supplierName="Mahalakshmi Wholesale FMCG"
@@ -255,30 +239,27 @@ export default function DemoSection() {
             />
           </div>
 
-          {/* Action Button */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-2 pt-1">
             {orderSent ? (
-              <div className="p-3.5 rounded-xl text-xs text-emerald-400 font-mono flex items-center gap-2">
+              <div className="p-3 rounded-xl text-xs text-emerald-400 font-mono flex items-center gap-2">
                 <Check className="w-4 h-4 shrink-0 text-emerald-400" />
                 <span>WhatsApp reorder transmitted to wholesaler!</span>
               </div>
             ) : (
               <button
                 onClick={() => setOrderSent(true)}
-                className="w-full py-3.5 px-4 rounded-xl bg-[#25D366] text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-[#20bd5a] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"
+                className="w-full py-3 px-4 rounded-xl bg-[#25D366] text-black font-semibold text-xs font-mono uppercase tracking-wider hover:bg-[#20bd5a] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"
               >
                 <Send className="w-4 h-4" />
                 <span>Approve &amp; Send WhatsApp Order</span>
               </button>
             )}
 
-            <p className="text-[11px] text-text-secondary text-center">
+            <p className="text-[10px] text-text-secondary text-center">
               Requires 1-tap confirmation from shopkeeper.
             </p>
           </div>
-
         </div>
-
       </div>
     </section>
   );
