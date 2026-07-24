@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import Logo from "@/src/components/Logo";
 
 export default function Footer() {
   return (

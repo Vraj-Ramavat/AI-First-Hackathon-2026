@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArrowUpRight, User } from "lucide-react";
+import Logo from "@/src/components/Logo";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,13 +26,8 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
         {/* Logo Left */}
-        <Link href="/" className="flex items-center gap-1 group">
-          <span className="font-display font-bold text-xl sm:text-2xl text-text-primary tracking-tight">
-            Stock
-          </span>
-          <span className="font-display font-bold text-xl sm:text-2xl text-accent tracking-tight group-hover:text-accent-hover transition-colors">
-            Saathi
-          </span>
+        <Link href="/" className="flex items-center gap-2 group">
+          <Logo />
         </Link>
 
         {/* Center Nav Links */}
