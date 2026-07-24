@@ -88,10 +88,12 @@ export default function DashboardLayout() {
   }, []);
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    } else if (status === "authenticated") {
       fetchStores();
     }
-  }, [status, fetchStores]);
+  }, [status, fetchStores, router]);
 
   useEffect(() => {
     if (currentStoreId) {

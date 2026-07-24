@@ -152,6 +152,16 @@ export default function ScanShelfModal({
           </div>
         )}
 
+        {!currentStoreId && (
+          <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 text-amber-200 text-xs space-y-2">
+            <div className="flex items-center gap-2 font-bold text-amber-400">
+              <AlertCircle className="w-4 h-4" />
+              <span>No Active Store Selected</span>
+            </div>
+            <p>You must be signed in to an active Kirana store to scan and manage inventory.</p>
+          </div>
+        )}
+
         {/* Hidden Inputs */}
         <input
           ref={fileInputRef}
