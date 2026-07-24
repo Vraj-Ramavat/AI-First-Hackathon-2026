@@ -23,7 +23,7 @@ async function verifyStoreAccess(userId: string, storeId: string) {
 // Substring & word-intersection matcher to cross-reference detected items with store DB products
 function findExistingMatch(detectedName: string, existingProducts: any[]) {
   const cleanDetected = detectedName.toLowerCase().replace(/[^a-z0-9]/g, "");
-  
+
   for (const prod of existingProducts) {
     const cleanProd = prod.name.toLowerCase().replace(/[^a-z0-9]/g, "");
     if (cleanDetected.includes(cleanProd) || cleanProd.includes(cleanDetected)) {

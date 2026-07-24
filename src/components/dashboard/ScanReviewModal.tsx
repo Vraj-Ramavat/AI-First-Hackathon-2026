@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, X, Sparkles, Plus, Edit2, AlertCircle, RefreshCw } from "lucide-react";
+import { Check, X, Sparkles, AlertCircle, IndianRupee } from "lucide-react";
 import { ProductItem } from "./ProductModal";
 
 export interface ScanItemReview {
@@ -75,7 +75,7 @@ export default function ScanReviewModal({
       // Process selected items sequentially through existing store product APIs
       for (const item of selectedItems) {
         if (item.action === "UPDATE_EXISTING" && item.existingProductId) {
-          // Update existing product
+          // Update existing product with quantity & user-entered MRP
           await fetch(`/api/products/${item.existingProductId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -84,11 +84,11 @@ export default function ScanReviewModal({
               ...(item.name && { name: item.name }),
               ...(item.category && { category: item.category }),
               ...(item.unit && { unit: item.unit }),
-              ...(item.price !== undefined && { price: Number(item.price) }),
+              price: Number(item.price || 0),
             }),
           });
         } else {
-          // Create new product
+          // Create new product with user-entered MRP
           await fetch(`/api/stores/${currentStoreId}/products`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -115,7 +115,7 @@ export default function ScanReviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="w-full max-w-3xl bg-surface-2 border border-white/10 rounded-3xl p-6 shadow-2xl relative space-y-6 max-h-[90vh] flex flex-col">
+      <div className="w-full max-w-4xl bg-surface-2 border border-white/10 rounded-3xl p-6 shadow-2xl relative space-y-6 max-h-[90vh] flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/5 pb-4 shrink-0">
@@ -128,7 +128,7 @@ export default function ScanReviewModal({
                 Review &amp; Confirm AI Scan Output
               </h3>
               <p className="text-xs font-mono text-text-secondary">
-                Review detected items before saving. Nothing is written to your database until confirmed.
+                Review detected items, update stock count &amp; set product MRP before saving.
               </p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function ScanReviewModal({
         {notes && (
           <div className="p-3 rounded-xl bg-surface/60 border border-white/5 text-xs font-mono text-text-secondary flex items-center justify-between">
             <span>AI Notes: {notes}</span>
-            <span className="text-accent text-[10px] font-bold uppercase">Human Review Step</span>
+            <span className="text-accent text-[10px] font-bold uppercase">Human MRP Review Step</span>
           </div>
         )}
 
@@ -200,7 +200,7 @@ export default function ScanReviewModal({
                   {/* Editable Fields Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
                     {/* Name */}
-                    <div className="sm:col-span-5">
+                    <div className="sm:col-span-4">
                       <label className="block text-[10px] font-mono text-text-secondary uppercase mb-1">
                         Product Name
                       </label>
@@ -214,25 +214,45 @@ export default function ScanReviewModal({
                     </div>
 
                     {/* Quantity */}
-                    <div className="sm:col-span-3">
+                    <div className="sm:col-span-2">
                       <label className="block text-[10px] font-mono text-text-secondary uppercase mb-1">
-                        Est. Quantity
+                        Quantity
                       </label>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1">
                         <input
                           type="number"
                           min={0}
                           value={item.quantity}
                           disabled={!item.included}
                           onChange={(e) => updateItemField(item.id, "quantity", Number(e.target.value))}
-                          className="w-full bg-base border border-white/10 rounded-xl px-3 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-accent disabled:opacity-50"
+                          className="w-full bg-base border border-white/10 rounded-xl px-2.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-accent disabled:opacity-50"
                         />
-                        <span className="text-xs font-mono text-text-secondary">{item.unit}</span>
+                        <span className="text-[10px] font-mono text-text-secondary">{item.unit}</span>
                       </div>
                     </div>
 
-                    {/* Action Selector Override */}
-                    <div className="sm:col-span-4">
+                    {/* MRP (INR) Price Input */}
+                    <div className="sm:col-span-3">
+                      <label className="block text-[10px] font-mono text-text-secondary uppercase mb-1 flex items-center gap-1">
+                        <span>MRP Price (₹)</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-2 text-text-secondary text-xs font-mono">₹</span>
+                        <input
+                          type="number"
+                          min={0}
+                          step="0.5"
+                          placeholder="MRP"
+                          value={item.price || ""}
+                          disabled={!item.included}
+                          onChange={(e) => updateItemField(item.id, "price", Number(e.target.value))}
+                          className="w-full bg-base border border-white/10 rounded-xl pl-7 pr-3 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-accent disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Match Action Selector Override */}
+                    <div className="sm:col-span-3">
                       <label className="block text-[10px] font-mono text-text-secondary uppercase mb-1">
                         Match Action
                       </label>

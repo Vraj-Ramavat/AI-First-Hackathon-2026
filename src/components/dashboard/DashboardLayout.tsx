@@ -394,7 +394,10 @@ export default function DashboardLayout() {
 
         {activeTab === "alerts" && (
           <div className="space-y-8">
-            <AlertsFeed />
+            <AlertsFeed
+              currentStoreName={currentStore?.name || stores[0]?.name || "Hawks"}
+              products={products}
+            />
           </div>
         )}
       </main>
