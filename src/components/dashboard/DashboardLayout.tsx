@@ -25,6 +25,7 @@ import ProductModal, { ProductItem } from "@/src/components/dashboard/ProductMod
 import DeleteProductModal from "@/src/components/dashboard/DeleteProductModal";
 import ScanShelfModal from "@/src/components/dashboard/ScanShelfModal";
 import ScanReviewModal, { ScanItemReview } from "@/src/components/dashboard/ScanReviewModal";
+import Logo from "@/src/components/Logo";
 
 export default function DashboardLayout() {
   const { data: session, status } = useSession();
@@ -168,15 +169,7 @@ export default function DashboardLayout() {
           {/* Logo & Back Link */}
           <div>
             <Link href="/" className="flex items-center gap-1 mb-4 group">
-              <span className="font-display font-bold text-xl text-text-primary">
-                Stock
-              </span>
-              <span className="font-display font-bold text-xl text-accent">
-                Saathi
-              </span>
-              <span className="text-[10px] font-mono text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded ml-1">
-                DASHBOARD
-              </span>
+              <Logo textSize="text-xl" showBadge="DASHBOARD" />
             </Link>
 
             <Link

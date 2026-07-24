@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import Logo from "@/src/components/Logo";
 
 export default function Footer() {
   return (
@@ -7,13 +8,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
         {/* Brand & Hackathon Context */}
         <div className="space-y-3 max-w-md">
-          <Link href="/" className="flex items-center gap-1">
-            <span className="font-display font-bold text-2xl text-text-primary">
-              Stock
-            </span>
-            <span className="font-display font-bold text-2xl text-accent">
-              Saathi
-            </span>
+          <Link href="/" className="flex items-center gap-2 group">
+            <Logo textSize="text-2xl" />
           </Link>
           <p className="text-xs text-text-secondary leading-relaxed">
             AI-powered inventory intelligence for India&apos;s 13M+ Kirana stores. Built for Summer School &apos;26 AI First Hackathon (IIT Jammu I3C) — Track: AI for Industry, Business & Productivity.
