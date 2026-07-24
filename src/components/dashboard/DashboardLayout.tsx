@@ -23,6 +23,8 @@ import StoreSwitcher, { StoreItem } from "@/src/components/dashboard/StoreSwitch
 import AddStoreModal from "@/src/components/dashboard/AddStoreModal";
 import ProductModal, { ProductItem } from "@/src/components/dashboard/ProductModal";
 import DeleteProductModal from "@/src/components/dashboard/DeleteProductModal";
+import ScanShelfModal from "@/src/components/dashboard/ScanShelfModal";
+import ScanReviewModal, { ScanItemReview } from "@/src/components/dashboard/ScanReviewModal";
 
 export default function DashboardLayout() {
   const { data: session, status } = useSession();
@@ -42,6 +44,12 @@ export default function DashboardLayout() {
   const [isProductModalOpen, setIsProductModalOpen] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [deletingProduct, setDeletingProduct] = useState<ProductItem | null>(null);
+
+  // AI Scanner Modals state
+  const [isScanShelfOpen, setIsScanShelfOpen] = useState<boolean>(false);
+  const [isScanReviewOpen, setIsScanReviewOpen] = useState<boolean>(false);
+  const [scanDetectedItems, setScanDetectedItems] = useState<ScanItemReview[]>([]);
+  const [scanNotes, setScanNotes] = useState<string>("");
 
   // Fetch all user stores
   const fetchStores = useCallback(async () => {
@@ -132,6 +140,13 @@ export default function DashboardLayout() {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
   };
 
+  // Handle AI Vision Scan Complete -> Open Review Screen
+  const handleScanComplete = (detectedItems: ScanItemReview[], scanId: string, notes: string) => {
+    setScanDetectedItems(detectedItems);
+    setScanNotes(notes);
+    setIsScanReviewOpen(true);
+  };
+
   const currentStore = stores.find((s) => s.id === currentStoreId) || stores[0];
 
   const criticalCount = products.filter((p) => p.status === "CRITICAL").length;
@@ -146,7 +161,7 @@ export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-base text-text-primary flex flex-col md:flex-row">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-surface hairline-r flex flex-col justify-between p-6 shrink-0">
+      <aside className="w-full md:w-64 bg-surface hairline-r flex flex-col justify-between p-6 shrink-0 relative z-30">
         <div className="space-y-8">
           {/* Logo & Back Link */}
           <div>
@@ -274,13 +289,13 @@ export default function DashboardLayout() {
             <div className="px-3.5 py-1.5 rounded-full bg-surface hairline-all text-xs font-mono text-text-secondary">
               <span>Jul 24, 2026</span>
             </div>
-            <Link
-              href="/#demo"
-              className="px-4 py-2 rounded-full bg-accent text-text-primary text-xs font-mono uppercase tracking-wider font-bold hover:bg-accent-hover transition-colors flex items-center gap-2"
+            <button
+              onClick={() => setIsScanShelfOpen(true)}
+              className="px-4 py-2 rounded-full bg-accent text-text-primary text-xs font-mono uppercase tracking-wider font-bold hover:bg-accent-hover transition-colors flex items-center gap-2 shadow-lg shadow-accent/10"
             >
               <Camera className="w-3.5 h-3.5" />
               <span>Scan Shelf</span>
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -405,6 +420,26 @@ export default function DashboardLayout() {
         onClose={() => setDeletingProduct(null)}
         product={deletingProduct}
         onProductDeleted={handleProductDeleted}
+      />
+
+      {/* AI Shelf Scanner Modals */}
+      <ScanShelfModal
+        isOpen={isScanShelfOpen}
+        onClose={() => setIsScanShelfOpen(false)}
+        currentStoreId={currentStoreId}
+        onScanComplete={handleScanComplete}
+      />
+
+      <ScanReviewModal
+        isOpen={isScanReviewOpen}
+        onClose={() => setIsScanReviewOpen(false)}
+        currentStoreId={currentStoreId}
+        existingProducts={products}
+        detectedItems={scanDetectedItems}
+        notes={scanNotes}
+        onConfirmSuccess={() => {
+          fetchProducts(currentStoreId);
+        }}
       />
     </div>
   );

@@ -8,23 +8,25 @@ generator client {
 }
 
 model User {
-  id           String      @id @default(cuid())
-  email        String      @unique
-  passwordHash String      @map("password_hash")
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String       @map("password_hash")
   name         String?
-  createdAt    DateTime    @default(now()) @map("created_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
   userStores   UserStore[]
+  scanResults  ScanResult[]
 
   @@map("users")
 }
 
 model Store {
-  id         String      @id @default(cuid())
-  name       String
-  location   String?
-  createdAt  DateTime    @default(now()) @map("created_at")
-  userStores UserStore[]
-  products   Product[]
+  id          String       @id @default(cuid())
+  name        String
+  location    String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  userStores  UserStore[]
+  products    Product[]
+  scanResults ScanResult[]
 
   @@map("stores")
 }
@@ -60,6 +62,20 @@ model Product {
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@map("products")
+}
+
+model ScanResult {
+  id             String   @id @default(cuid())
+  storeId        String   @map("store_id")
+  userId         String   @map("user_id")
+  rawModelOutput String   @map("raw_model_output")
+  applied        Boolean  @default(false)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("scan_results")
 }
 
 model LoginAttempt {

@@ -43,3 +43,29 @@ export async function recordAttempt(email: string, ip?: string): Promise<void> {
     console.error("Record attempt failed:", error);
   }
 }
+
+/**
+ * DB-backed Scan Rate Limiter:
+ * Allows max 15 vision scans per store per 1-minute window.
+ */
+export async function checkScanRateLimit(identifier: string): Promise<boolean> {
+  const windowMs = 1 * 60 * 1000; // 1 minute
+  const maxAttempts = 15;
+  const cutoff = new Date(Date.now() - windowMs);
+
+  try {
+    const scanCount = await prisma.scanResult.count({
+      where: {
+        storeId: identifier,
+        createdAt: {
+          gte: cutoff,
+        },
+      },
+    });
+
+    return scanCount < maxAttempts;
+  } catch (error) {
+    console.error("Scan rate limit check failed:", error);
+    return true; // Fail open in dev if DB logger error
+  }
+}
