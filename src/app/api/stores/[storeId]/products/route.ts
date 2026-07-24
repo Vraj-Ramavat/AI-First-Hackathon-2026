@@ -4,6 +4,8 @@ import { z } from "zod";
 import { authOptions } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
   category: z.string().optional(),

@@ -4,6 +4,8 @@ import { z } from "zod";
 import { authOptions } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 const createStoreSchema = z.object({
   name: z.string().min(2, "Store name must be at least 2 characters"),
   location: z.string().optional(),

@@ -85,5 +85,5 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/login",
     error: "/auth/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "default-secret-stock-saathi-production-build-2026",
 };
