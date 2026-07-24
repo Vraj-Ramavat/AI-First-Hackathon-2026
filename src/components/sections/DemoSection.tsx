@@ -94,7 +94,7 @@ export default function DemoSection() {
   };
 
   return (
-    <section id="demo" className="py-12 sm:py-16 px-6 sm:px-8 max-w-7xl mx-auto hairline-t space-y-10">
+    <section id="demo" className="py-12 sm:py-16 px-6 sm:px-8 max-w-7xl mx-auto space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="max-w-3xl space-y-3">
           <p className="text-xs font-mono uppercase tracking-widest text-accent">
