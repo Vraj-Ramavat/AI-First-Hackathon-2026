@@ -226,31 +226,31 @@ export default function AlertsFeed({
   const activeStoreName = currentStoreName || "Hawks";
 
   return (
-    <div className="w-full bg-surface rounded-2xl hairline-all p-6 space-y-6">
+    <div className="w-full bg-surface border-2 border-accent/30 rounded-sm p-6 space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-accent/30 pb-4">
         <div>
-          <h2 className="text-lg font-display font-bold text-text-primary flex items-center gap-2">
-            <span>Automated WhatsApp Reorder Feed ({activeStoreName})</span>
+          <h2 className="text-xl sm:text-2xl font-display font-bold text-text-primary uppercase tracking-wide flex items-center gap-2">
+            <span>AUTOMATED WHATSAPP REORDER FEED ({activeStoreName})</span>
             <Sparkles className="w-4 h-4 text-accent" />
           </h2>
-          <p className="text-xs text-text-secondary mt-0.5">
+          <p className="text-xs font-mono text-text-secondary mt-0.5">
             Automatic 2-hour inventory alerts sent directly from store <strong className="text-accent">{activeStoreName}</strong> to owner&apos;s mobile number.
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#25D366]/10 text-[#25D366] text-xs font-mono border border-[#25D366]/20 shrink-0">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-[#25D366]/10 text-[#25D366] text-xs font-mono border border-[#25D366]/30 shrink-0 font-bold uppercase tracking-wider">
           <MessageSquare className="w-3.5 h-3.5" />
-          <span>Active Store: {activeStoreName}</span>
+          <span>ACTIVE STORE: {activeStoreName}</span>
         </div>
       </div>
 
       {/* 2-Hour Persistent Automated Scheduler Control Panel */}
-      <div className="p-5 rounded-2xl bg-surface-2 border border-accent/20 space-y-4">
+      <div className="p-5 rounded-sm bg-surface-2 border border-accent/30 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-accent/10 border border-accent/20 text-accent">
+            <div className="p-2.5 rounded-sm bg-accent/10 border border-accent/30 text-accent">
               <Zap className="w-5 h-5 animate-pulse" />
             </div>
             <div>
@@ -258,10 +258,10 @@ export default function AlertsFeed({
                 <h4 className="text-xs font-mono font-bold text-text-primary uppercase tracking-wider">
                   2-Hour Auto-WhatsApp Dispatcher ({activeStoreName})
                 </h4>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                  autoScheduleEnabled ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"
+                <span className={`px-2.5 py-0.5 rounded-none text-[10px] font-mono font-bold tracking-wider ${
+                  autoScheduleEnabled ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/40" : "bg-red-500/10 text-red-400 border border-red-500/40"
                 }`}>
-                  {autoScheduleEnabled ? "RUNNING (NEVER RESETS ON REFRESH)" : "PAUSED"}
+                  {autoScheduleEnabled ? "RUNNING (PERSISTENT)" : "PAUSED"}
                 </span>
               </div>
               <p className="text-[11px] text-text-secondary font-mono mt-0.5">
@@ -273,19 +273,19 @@ export default function AlertsFeed({
           {/* Toggle Switch & Countdown Badge */}
           <div className="flex items-center gap-3 shrink-0">
             {autoScheduleEnabled && (
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-base border border-accent/30 text-xs font-mono text-accent">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-sm bg-base border border-accent/30 text-xs font-mono text-accent font-bold">
                 <Clock className="w-3.5 h-3.5 animate-spin" />
-                <span>Next Auto-Alert: <strong>{formatCountdown(secondsRemaining)}</strong></span>
+                <span>Next Alert: <strong>{formatCountdown(secondsRemaining)}</strong></span>
               </div>
             )}
 
             <button
               type="button"
               onClick={toggleAutoSchedule}
-              className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
+              className={`px-4 py-2 rounded-sm text-xs font-mono font-bold uppercase tracking-wider transition-all border ${
                 autoScheduleEnabled
-                  ? "bg-accent hover:bg-accent-hover text-text-primary shadow-lg shadow-accent/10"
-                  : "bg-surface-2 hover:bg-base text-text-secondary border border-white/10"
+                  ? "bg-accent hover:bg-accent-hover text-text-primary border-accent/40"
+                  : "bg-surface-2 hover:bg-base text-text-secondary border-accent/20"
               }`}
             >
               {autoScheduleEnabled ? "Pause 2-Hour Schedule" : "Enable 2-Hour Auto Schedule"}
@@ -294,7 +294,7 @@ export default function AlertsFeed({
         </div>
 
         {/* Quick Manual Test Trigger Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-white/5 text-xs font-mono text-text-secondary">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-accent/20 text-xs font-mono text-text-secondary">
           <span className="flex items-center gap-1.5">
             <BellRing className="w-3.5 h-3.5 text-accent" />
             Last Auto Alert for {activeStoreName}: <strong className="text-text-primary">{lastAutoTriggerTime || "Not yet run today"}</strong>
@@ -304,7 +304,7 @@ export default function AlertsFeed({
             type="button"
             onClick={triggerAutoScheduleScan}
             disabled={isCronRunning}
-            className="text-xs font-mono text-accent hover:underline flex items-center gap-1.5 disabled:opacity-50"
+            className="text-xs font-mono text-accent hover:underline flex items-center gap-1.5 disabled:opacity-50 uppercase font-bold"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isCronRunning ? "animate-spin" : ""}`} />
             <span>Run 2-Hour Auto Dispatch Now ({activeStoreName})</span>
@@ -312,7 +312,7 @@ export default function AlertsFeed({
         </div>
 
         {lastAutoDispatchStatus && (
-          <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-xs font-mono flex items-center gap-2">
+          <div className="p-2.5 rounded-sm bg-emerald-950/40 border border-emerald-800/40 text-emerald-300 text-xs font-mono flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>{lastAutoDispatchStatus}</span>
           </div>

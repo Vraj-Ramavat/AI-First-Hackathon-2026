@@ -119,14 +119,22 @@ interface LogoProps {
 
 export default function Logo({
   className = "flex items-center gap-2 group",
-  iconClassName = "w-7 h-7 sm:w-8 sm:h-8",
+  iconClassName = "w-8 h-8 sm:w-9 sm:h-9",
   textSize = "text-xl sm:text-2xl",
   showBadge,
 }: LogoProps) {
   return (
     <div className={className}>
-      <LogoIcon className={`${iconClassName} shrink-0 text-accent transition-transform duration-300 group-hover:scale-105`} />
-      <div className="flex items-center gap-1">
+      <div className={`${iconClassName} rounded-xl bg-gradient-to-br from-[#C9A84C]/20 via-black to-black border border-[#C9A84C]/40 flex items-center justify-center p-1.5 shadow-lg shadow-[#C9A84C]/10 relative overflow-hidden shrink-0`}>
+        <div className="absolute inset-0 rounded-xl bg-[radial-gradient(circle_at_30%_30%,rgba(255,243,209,0.15),transparent_70%)] pointer-events-none" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.svg"
+          alt="StockSaathi Logo"
+          className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(201,168,76,0.6)]"
+        />
+      </div>
+      <div className="flex items-center gap-0.5">
         <span className={`font-display font-bold ${textSize} text-text-primary tracking-tight`}>
           Stock
         </span>

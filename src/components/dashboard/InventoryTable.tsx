@@ -24,60 +24,60 @@ export default function InventoryTable({
   onQuickQuantityChange,
 }: InventoryTableProps) {
   return (
-    <div className="w-full bg-surface rounded-2xl hairline-all overflow-hidden">
-      {/* Table Header */}
-      <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="w-full bg-surface border-2 border-accent/30 rounded-sm overflow-hidden shadow-none">
+      {/* Table Header / Ledger Register Banner */}
+      <div className="p-6 border-b-2 border-accent/30 bg-gradient-to-r from-surface via-[#181512] to-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-display font-bold text-text-primary flex items-center gap-2">
-            <span>Kirana Live Inventory Monitor</span>
-            <span className="text-xs font-mono font-normal text-text-secondary px-2.5 py-0.5 rounded-full bg-surface-2 border border-white/5">
-              {products.length} Items
+          <h2 className="text-xl sm:text-2xl font-display font-bold text-text-primary uppercase tracking-wide flex items-center gap-3">
+            <span>KIRANA DAILY INVENTORY REGISTER</span>
+            <span className="text-xs font-mono font-bold text-accent px-2.5 py-0.5 rounded-none bg-accent/10 border border-accent/30 tracking-wider">
+              [ {products.length} SKUs TRACKED ]
             </span>
           </h2>
-          <p className="text-xs text-text-secondary mt-0.5">
+          <p className="text-xs font-mono text-text-secondary mt-1">
             Real-time stock management &amp; computer vision shelf reading synced with{" "}
-            <span className="text-accent font-semibold">{currentStoreName}</span>.
+            <span className="text-accent font-bold uppercase">{currentStoreName}</span>.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={onAddProductClick}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent hover:bg-accent-hover text-text-primary text-xs font-mono font-semibold transition-all shadow-lg shadow-accent/10"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-sm bg-accent hover:bg-accent-hover text-text-primary text-xs font-mono uppercase tracking-widest font-bold border border-accent/40 transition-all active:translate-y-0.5"
           >
             <Plus className="w-4 h-4 text-text-primary" />
-            <span>Add FMCG Product</span>
+            <span>ADD FMCG PRODUCT</span>
           </button>
         </div>
       </div>
 
-      {/* Responsive Table */}
+      {/* Responsive Ledger Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
-            <tr className="bg-surface-2 text-text-secondary font-mono border-b border-white/10">
-              <th className="py-3.5 px-6 font-medium">PRODUCT NAME</th>
-              <th className="py-3.5 px-6 font-medium">CATEGORY</th>
-              <th className="py-3.5 px-6 font-medium">QUANTITY &amp; ADJUST</th>
-              <th className="py-3.5 px-6 font-medium">EST. STOCK %</th>
-              <th className="py-3.5 px-6 font-medium">STATUS</th>
-              <th className="py-3.5 px-6 font-medium text-right">ACTIONS</th>
+            <tr className="bg-[#181512] text-accent font-mono border-b-2 border-accent/30 text-[11px] tracking-widest">
+              <th className="py-3.5 px-6 font-bold uppercase">PRODUCT NAME</th>
+              <th className="py-3.5 px-6 font-bold uppercase">CATEGORY</th>
+              <th className="py-3.5 px-6 font-bold uppercase">QUANTITY &amp; ADJUST</th>
+              <th className="py-3.5 px-6 font-bold uppercase">EST. STOCK GAUGE</th>
+              <th className="py-3.5 px-6 font-bold uppercase">STATUS TAG</th>
+              <th className="py-3.5 px-6 font-bold uppercase text-right">ACTIONS</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-accent/15">
             {loading ? (
               <tr>
                 <td colSpan={6} className="py-12 text-center text-xs font-mono text-text-secondary">
-                  <div className="inline-block w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin mb-2" />
-                  <p>Loading store inventory...</p>
+                  <div className="inline-block w-6 h-6 border-2 border-accent/30 border-t-accent rounded-none animate-spin mb-2" />
+                  <p className="uppercase tracking-wider">[ READING STORE LEDGER... ]</p>
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-12 text-center text-xs font-mono text-text-secondary space-y-2">
                   <Package className="w-8 h-8 text-accent/40 mx-auto" />
-                  <p className="font-semibold text-text-primary">No products in this store yet</p>
-                  <p>Click &quot;Add FMCG Product&quot; above to start tracking stock.</p>
+                  <p className="font-bold text-text-primary uppercase tracking-wider">No products logged in this register yet</p>
+                  <p className="text-text-secondary">Click &quot;ADD FMCG PRODUCT&quot; above to log items into your ledger.</p>
                 </td>
               </tr>
             ) : (
@@ -88,17 +88,17 @@ export default function InventoryTable({
                 return (
                   <tr key={prod.id} className="hover:bg-surface-2/60 transition-colors">
                     {/* Product Name */}
-                    <td className="py-4 px-6 font-medium text-text-primary">
-                      {prod.name}
+                    <td className="py-4 px-6 font-mono font-bold text-text-primary">
+                      <div className="text-sm font-semibold tracking-wide text-text-primary">{prod.name}</div>
                       {prod.price ? (
-                        <span className="block text-[10px] font-mono text-accent">
-                          ₹{prod.price.toFixed(2)} per {prod.unit || "unit"}
+                        <span className="block text-[11px] font-mono text-accent font-bold mt-0.5">
+                          ₹{prod.price.toFixed(2)} / {prod.unit || "unit"}
                         </span>
                       ) : null}
                     </td>
 
                     {/* Category */}
-                    <td className="py-4 px-6 text-text-secondary font-mono">
+                    <td className="py-4 px-6 text-text-secondary font-mono text-xs uppercase tracking-wider">
                       {prod.category || "General FMCG"}
                     </td>
 
@@ -107,17 +107,17 @@ export default function InventoryTable({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => onQuickQuantityChange(prod.id, Math.max(0, prod.quantity - 1))}
-                          className="w-6 h-6 rounded-md bg-surface-2 border border-white/10 flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-base"
+                          className="w-6 h-6 rounded-none bg-surface-2 border border-accent/30 flex items-center justify-center text-accent font-bold hover:bg-accent hover:text-base transition-colors text-xs"
                           title="Quick Decrement (Sold)"
                         >
                           -
                         </button>
-                        <span className="font-bold text-text-primary text-xs px-1 min-w-[40px] text-center">
+                        <span className="font-bold text-text-primary text-xs px-1 min-w-[50px] text-center tracking-wider">
                           {prod.quantity} {prod.unit}
                         </span>
                         <button
                           onClick={() => onQuickQuantityChange(prod.id, prod.quantity + 1)}
-                          className="w-6 h-6 rounded-md bg-surface-2 border border-white/10 flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-base"
+                          className="w-6 h-6 rounded-none bg-surface-2 border border-accent/30 flex items-center justify-center text-accent font-bold hover:bg-accent hover:text-base transition-colors text-xs"
                           title="Quick Increment (Stock Received)"
                         >
                           +
@@ -125,41 +125,48 @@ export default function InventoryTable({
                       </div>
                     </td>
 
-                    {/* Stock Level Bar */}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs text-text-primary font-bold min-w-[36px]">
+                    {/* Physical Gauge Meter (Notched Tick Fill) */}
+                    <td className="py-4 px-6 font-mono">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-mono text-xs text-accent font-bold min-w-[36px]">
                           {percent}%
                         </span>
-                        <div className="w-24 h-2 bg-surface-2 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              status === "CRITICAL"
-                                ? "bg-status-critical"
-                                : status === "LOW"
-                                ? "bg-status-low"
-                                : "bg-status-stock"
-                            }`}
-                            style={{ width: `${percent}%` }}
-                          />
+                        <div className="flex items-center gap-1 p-1 bg-surface-2 border border-accent/20 rounded-none" title={`Stock level: ${percent}%`}>
+                          {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((step) => {
+                            const isFilled = percent >= step;
+                            return (
+                              <div
+                                key={step}
+                                className={`w-1.5 h-3.5 rounded-none transition-all ${
+                                  isFilled
+                                    ? status === "CRITICAL"
+                                      ? "bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]"
+                                      : status === "LOW"
+                                      ? "bg-amber-400 shadow-[0_0_4px_rgba(245,158,11,0.5)]"
+                                      : "bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.5)]"
+                                    : "bg-white/10"
+                                }`}
+                              />
+                            );
+                          })}
                         </div>
                       </div>
                     </td>
 
-                    {/* Desaturated Status Badge */}
+                    {/* Embossed Metal Price Tag / Seal Status Badge */}
                     <td className="py-4 px-6 font-mono">
                       {status === "CRITICAL" && (
-                        <span className="px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-bold tracking-widest text-red-400 bg-red-500/10 border border-red-500/40 rounded-none relative before:w-1 before:h-1 before:bg-base before:border before:border-red-500/60 before:rounded-full">
                           CRITICAL DEPLETION
                         </span>
                       )}
                       {status === "LOW" && (
-                        <span className="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-bold tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/40 rounded-none relative before:w-1 before:h-1 before:bg-base before:border before:border-amber-500/60 before:rounded-full">
                           REORDER SOON
                         </span>
                       )}
                       {status === "IN_STOCK" && (
-                        <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-bold tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/40 rounded-none relative before:w-1 before:h-1 before:bg-base before:border before:border-emerald-500/60 before:rounded-full">
                           IN STOCK
                         </span>
                       )}
@@ -170,15 +177,15 @@ export default function InventoryTable({
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => onEditProductClick(prod)}
-                          className="p-1.5 rounded-lg bg-surface-2/80 hover:bg-surface-2 text-text-secondary hover:text-text-primary transition-colors"
-                          title="Edit Product"
+                          className="p-1.5 rounded-none bg-surface-2 border border-accent/20 text-accent hover:bg-accent/20 hover:border-accent transition-colors"
+                          title="Edit Item"
                         >
-                          <Edit2 className="w-3.5 h-3.5 text-accent" />
+                          <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onDeleteProductClick(prod)}
-                          className="p-1.5 rounded-lg bg-surface-2/80 hover:bg-surface-2 text-text-secondary hover:text-red-400 transition-colors"
-                          title="Delete Product"
+                          className="p-1.5 rounded-none bg-surface-2 border border-accent/20 text-text-secondary hover:text-red-400 hover:border-red-500/40 transition-colors"
+                          title="Delete Item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

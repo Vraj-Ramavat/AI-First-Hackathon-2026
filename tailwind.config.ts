@@ -31,7 +31,8 @@ const config: Config = {
         hairline: "rgba(242, 237, 228, 0.08)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "sans-serif"],
+        display: ["var(--font-display)", "Teko", "Oswald", "sans-serif"],
+        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
         sans: ["var(--font-sans)", "sans-serif"],
       },
       animation: {
