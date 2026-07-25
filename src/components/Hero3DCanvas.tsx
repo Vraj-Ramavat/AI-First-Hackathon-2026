@@ -8,7 +8,7 @@ import * as THREE from "three";
 // 3D Metallic StockSaathi Logo Model Component
 function Logo3DModel({ isVisible }: { isVisible: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Group>(null);
   const shadowRef = useRef<THREE.Mesh>(null);
   const targetRotation = useRef({ x: 0, y: 0 });
 
