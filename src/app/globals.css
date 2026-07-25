@@ -106,7 +106,7 @@
 }
 
 /* Form inputs, dropdowns & select options in light mode */
-[data-theme="light"] input, .light input,
+[data-theme="light"] input:not(.auth-input), .light input:not(.auth-input),
 [data-theme="light"] select, .light select,
 [data-theme="light"] textarea, .light textarea {
   background-color: #FFFFFF !important;

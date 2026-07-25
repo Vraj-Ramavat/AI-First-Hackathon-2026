@@ -58,10 +58,35 @@ const CustomLedgerTooltip = ({ active, payload, label }: any) => {
             <span className="font-bold">{payload[1]?.value} Items</span>
           </div>
         )}
-        <div className="text-emerald-400 flex justify-between pt-1 border-t border-white/5">
+        <div className="text-emerald-500 flex justify-between pt-1 border-t border-accent/20">
           <span>Est. Sales:</span>
           <span className="font-bold">₹{payload[0]?.payload?.revenue?.toLocaleString()}</span>
         </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+// Custom Tooltip for Category Stock Distribution Chart (Adapts to Light / Dark Theme)
+const CustomCategoryTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-surface border-2 border-accent/40 rounded-sm p-3 font-mono text-xs shadow-2xl space-y-1.5 min-w-[170px] text-text-primary">
+        <div className="text-accent font-bold uppercase border-b border-accent/20 pb-1 flex items-center justify-between">
+          <span>[ {label} ]</span>
+          <span className="text-[10px] text-text-secondary">STOCK SPLIT</span>
+        </div>
+        <div className="text-text-primary flex justify-between pt-1">
+          <span className="text-text-secondary">Tracked Quantity:</span>
+          <span className="font-bold text-accent">{payload[0]?.value} SKUs</span>
+        </div>
+        {payload[0]?.payload?.critical > 0 && (
+          <div className="text-red-500 font-bold flex justify-between">
+            <span>Critical Status:</span>
+            <span>{payload[0]?.payload?.critical} Items</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -252,10 +277,7 @@ export default function DashboardAnalytics({
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(242, 237, 228, 0.08)" horizontal={false} />
                     <XAxis type="number" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
                     <YAxis dataKey="name" type="category" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
-                    <Tooltip
-                      formatter={(val: any) => [`${val} SKUs in Register`, "Tracked Stock"]}
-                      contentStyle={{ backgroundColor: "#141210", borderColor: "rgba(201, 168, 76, 0.4)", fontFamily: "var(--font-mono)", fontSize: "11px" }}
-                    />
+                    <Tooltip content={<CustomCategoryTooltip />} />
                     <Bar dataKey="count" radius={[0, 2, 2, 0]}>
                       {dynamicCategoryDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />

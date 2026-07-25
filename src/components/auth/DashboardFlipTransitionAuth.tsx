@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import VIPAuthCard from "./VIPAuthCard";
 import { Sparkles, ArrowRight, ShieldCheck, Sparkle, Zap, Bot, Layers } from "lucide-react";
+import { useTheme } from "@/src/context/ThemeContext";
 
 interface PanelData {
   id: number;
@@ -45,6 +47,9 @@ const PANELS: PanelData[] = [
 ];
 
 export default function DashboardFlipTransitionAuth() {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   const [isLoginActive, setIsLoginActive] = useState<boolean>(false);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
 
@@ -96,7 +101,7 @@ export default function DashboardFlipTransitionAuth() {
   };
 
   return (
-    <div className="min-h-screen w-full relative bg-black overflow-hidden selection:bg-[#C9A84C] selection:text-black">
+    <div className={`min-h-screen w-full relative overflow-hidden transition-colors duration-300 ${isLight ? "bg-base text-text-primary" : "bg-black text-white selection:bg-[#C9A84C] selection:text-black"}`}>
 
       {/* Perspective Container for 3D Flips & Spherical Motion */}
       <div className="relative min-h-screen w-full perspective-1200 overflow-hidden flex flex-col justify-center items-center">
@@ -106,16 +111,18 @@ export default function DashboardFlipTransitionAuth() {
           {isLoginActive && (
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col md:flex-row items-center justify-center overflow-hidden">
 
-              {/* Back to Dashboard Floating Trigger */}
+              {/* Back to Landing Page Floating Link */}
               <div className="absolute top-6 left-6 sm:top-8 sm:left-10 z-40">
-                <button
-                  type="button"
-                  onClick={handleCloseLogin}
-                  className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#C9A84C] hover:text-white transition-colors flex items-center gap-2 group py-1.5 px-4 bg-black/80 backdrop-blur-md rounded-full border border-[#C9A84C]/50 shadow-2xl"
+                <Link
+                  href="/"
+                  className={`text-[11px] font-mono uppercase tracking-[0.25em] transition-colors flex items-center gap-2 group py-1.5 px-4 rounded-full border shadow-2xl ${isLight
+                      ? "bg-surface text-accent border-accent/40 hover:bg-surface-2"
+                      : "bg-black/80 text-[#C9A84C] border-[#C9A84C]/50 hover:text-white"
+                    }`}
                 >
                   <span className="transition-transform group-hover:-translate-x-1">←</span>
-                  <span>BACK TO DASHBOARD</span>
-                </button>
+                  <span>BACK TO LANDING PAGE</span>
+                </Link>
               </div>
 
               {/* LEFT 3D SPHERE: Slow 3D Roll Inward + Sequential Circular ClipPath Expansion */}
@@ -141,7 +148,10 @@ export default function DashboardFlipTransitionAuth() {
                   clipPath: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
                 }}
                 style={{ transformStyle: "preserve-3d" }}
-                className="w-full md:w-1/2 h-1/2 md:h-full bg-gradient-to-br from-black via-zinc-950 to-black border-b md:border-b-0 md:border-r border-white/10 flex flex-col items-center justify-center p-8 sm:p-12 relative overflow-hidden shadow-[0_0_80px_rgba(201,168,76,0.3)]"
+                className={`hidden md:flex md:w-1/2 md:h-full flex-col items-center justify-center p-8 sm:p-12 relative overflow-hidden shadow-2xl transition-colors duration-300 ${isLight
+                  ? "bg-surface-2 border-r border-accent/30 text-text-primary"
+                  : "bg-gradient-to-br from-black via-zinc-950 to-black border-r border-white/10 text-white"
+                  }`}
               >
                 {/* 3D Gold Orb Specular Lighting Overlay during Roll */}
                 {ballStage !== "expanded" && (
@@ -156,7 +166,7 @@ export default function DashboardFlipTransitionAuth() {
 
                 {/* Subtle Gold Radial Ambient Backdrop */}
                 <div className="absolute inset-0 bg-radial-vignette opacity-70 pointer-events-none" />
-                <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-[#C9A84C]/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
                 {/* Left Page Content (Fades & slides up ONLY after ball expansion finishes) */}
                 <motion.div
@@ -170,7 +180,7 @@ export default function DashboardFlipTransitionAuth() {
                 >
                   {/* StockSaathi Website Logo & VIP Badge */}
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C9A84C]/20 via-black to-black border border-[#C9A84C]/40 flex items-center justify-center p-2.5 shadow-2xl shadow-[#C9A84C]/20 perspective-500">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 via-surface-2 to-surface border border-accent/40 flex items-center justify-center p-2.5 shadow-2xl shadow-accent/20 perspective-500">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <motion.img
                         animate={{ rotateY: [0, 360] }}
@@ -181,37 +191,37 @@ export default function DashboardFlipTransitionAuth() {
                       />
                     </div>
 
-                    <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#C9A84C] bg-[#C9A84C]/10 px-3 py-0.5 rounded-full border border-[#C9A84C]/30">
+                    <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-accent bg-accent/10 px-3 py-0.5 rounded-full border border-accent/30">
                       KIRANA INTELLIGENCE V2.4
                     </span>
                   </div>
 
                   {/* Brand Heading & Slogan */}
                   <div className="space-y-2">
-                    <h1 className="text-4xl font-display font-extrabold uppercase tracking-widest text-white">
-                      Stock<span className="text-[#C9A84C]">Saathi</span>
+                    <h1 className={`text-4xl font-display font-extrabold uppercase tracking-widest ${isLight ? "text-text-primary" : "text-white"}`}>
+                      Stock<span className="text-accent">Saathi</span>
                     </h1>
 
-                    <p className="text-xs font-sans text-white/70 leading-relaxed max-w-xs mx-auto">
+                    <p className={`text-xs font-sans leading-relaxed max-w-xs mx-auto ${isLight ? "text-text-secondary" : "text-white/70"}`}>
                       Elevate your experience with exclusive perks, early releases, and special rewards.
                     </p>
                   </div>
 
                   {/* Feature Highlights Grid */}
-                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10 text-left">
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2.5">
-                      <Zap className="w-4 h-4 text-[#C9A84C] shrink-0 mt-0.5" />
+                  <div className={`grid grid-cols-2 gap-3 pt-4 border-t text-left ${isLight ? "border-accent/20" : "border-white/10"}`}>
+                    <div className={`p-3 rounded-xl flex items-start gap-2.5 ${isLight ? "bg-surface border border-accent/20" : "bg-white/5 border border-white/5"}`}>
+                      <Zap className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[11px] font-mono font-bold text-white uppercase">AI VISION</div>
-                        <div className="text-[10px] text-white/50">Instant shelf scan</div>
+                        <div className={`text-[11px] font-mono font-bold uppercase ${isLight ? "text-text-primary" : "text-white"}`}>AI VISION</div>
+                        <div className={`text-[10px] ${isLight ? "text-text-secondary" : "text-white/50"}`}>Instant shelf scan</div>
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2.5">
-                      <Bot className="w-4 h-4 text-[#C9A84C] shrink-0 mt-0.5" />
+                    <div className={`p-3 rounded-xl flex items-start gap-2.5 ${isLight ? "bg-surface border border-accent/20" : "bg-white/5 border border-white/5"}`}>
+                      <Bot className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[11px] font-mono font-bold text-white uppercase">WHATSAPP</div>
-                        <div className="text-[10px] text-white/50">2-hr auto reorder</div>
+                        <div className={`text-[11px] font-mono font-bold uppercase ${isLight ? "text-text-primary" : "text-white"}`}>WHATSAPP</div>
+                        <div className={`text-[10px] ${isLight ? "text-text-secondary" : "text-white/50"}`}>2-hr auto reorder</div>
                       </div>
                     </div>
                   </div>
@@ -242,7 +252,8 @@ export default function DashboardFlipTransitionAuth() {
                   clipPath: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
                 }}
                 style={{ transformStyle: "preserve-3d" }}
-                className="w-full md:w-1/2 h-1/2 md:h-full bg-black flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden shadow-[0_0_80px_rgba(201,168,76,0.3)]"
+                className={`w-full md:w-1/2 h-full flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden transition-colors duration-300 ${isLight ? "bg-base text-text-primary" : "bg-black text-white"
+                  }`}
               >
                 {/* 3D Gold Orb Specular Lighting Overlay during Roll */}
                 {ballStage !== "expanded" && (
