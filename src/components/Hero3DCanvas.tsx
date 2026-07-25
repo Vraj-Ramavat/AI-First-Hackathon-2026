@@ -146,35 +146,44 @@ export default function Hero3DCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[4/5] sm:aspect-[1/1] lg:aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-b from-surface-2/40 via-surface/20 to-base border border-[#C9A84C]/20 shadow-2xl"
+      className="relative w-full h-60 sm:h-auto sm:aspect-square lg:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-b from-[#1A1610] via-surface/60 to-base border-2 border-[#C9A84C]/30 shadow-2xl group"
     >
+      {/* Top Brass Accent Line */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent z-10" />
+
+      {/* Top Status Badge */}
+      <div className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-base/80 backdrop-blur-md border border-[#C9A84C]/30 text-[10px] font-mono text-accent font-semibold">
+        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+        <span>INTERACTIVE 3D EMBLEM</span>
+      </div>
+
       <Canvas
-        camera={{ position: [0, 0, 4.2], fov: 45 }}
+        camera={{ position: [0, 0, 4.8], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
       >
-        <ambientLight intensity={0.8} />
+        <ambientLight intensity={0.9} />
         <directionalLight
           position={[5, 5, 5]}
-          intensity={1.4}
+          intensity={1.5}
           color="#F2EDE4"
         />
         <pointLight
           position={[-4, -2, 2]}
-          intensity={1.0}
+          intensity={1.2}
           color="#C9A84C"
         />
         <pointLight
           position={[3, -3, -2]}
-          intensity={0.5}
+          intensity={0.6}
           color="#F2EDE4"
         />
 
         <Logo3DModel isVisible={isVisible} />
       </Canvas>
 
-      <div className="absolute bottom-4 inset-x-0 text-center text-[10px] font-mono text-text-secondary/60 pointer-events-none">
-        Interactive 3D StockSaathi Logo • Move mouse to tilt
+      <div className="absolute bottom-2.5 inset-x-0 text-center text-[10px] font-mono text-text-secondary/70 pointer-events-none">
+        Touch or move mouse to tilt 3D emblem
       </div>
     </div>
   );

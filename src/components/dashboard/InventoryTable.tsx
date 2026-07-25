@@ -51,8 +51,143 @@ export default function InventoryTable({
         </div>
       </div>
 
-      {/* Responsive Ledger Table */}
-      <div className="overflow-x-auto">
+      {/* ------------------------------------------------------------- */}
+      {/* MOBILE CARDS VIEW (Visible on mobile screens < md)             */}
+      {/* ------------------------------------------------------------- */}
+      <div className="block md:hidden p-3.5 space-y-3 font-mono">
+        {loading ? (
+          <div className="py-12 text-center text-xs font-mono text-text-secondary">
+            <div className="inline-block w-6 h-6 border-2 border-accent/30 border-t-accent rounded-none animate-spin mb-2" />
+            <p className="uppercase tracking-wider">[ READING STORE LEDGER... ]</p>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="py-12 text-center text-xs font-mono text-text-secondary space-y-2">
+            <Package className="w-8 h-8 text-accent/40 mx-auto" />
+            <p className="font-bold text-text-primary uppercase tracking-wider">No products logged in this register yet</p>
+            <p className="text-text-secondary">Click &quot;ADD FMCG PRODUCT&quot; above to log items into your ledger.</p>
+          </div>
+        ) : (
+          products.map((prod) => {
+            const percent = prod.stockLevelPercent ?? 100;
+            const status = prod.status || (percent <= 20 ? "CRITICAL" : percent <= 40 ? "LOW" : "IN_STOCK");
+
+            return (
+              <div key={prod.id} className="space-y-3 bg-surface-2/40 border-2 border-accent/25 rounded-sm p-3.5">
+                {/* Header: Title + Status Tag */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="font-bold text-sm text-text-primary uppercase tracking-wide">{prod.name}</h3>
+                    <p className="text-[11px] text-text-secondary uppercase mt-0.5">{prod.category || "General FMCG"}</p>
+                  </div>
+                  
+                  {/* Status Badge */}
+                  <div className="shrink-0">
+                    {status === "CRITICAL" && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-widest text-red-400 bg-red-500/10 border border-red-500/40">
+                        CRITICAL
+                      </span>
+                    )}
+                    {status === "LOW" && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/40">
+                        REORDER
+                      </span>
+                    )}
+                    {status === "IN_STOCK" && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-bold tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/40">
+                        IN STOCK
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price & Quantity Bar */}
+                <div className="flex items-center justify-between pt-2 border-t border-accent/15 text-xs">
+                  {/* Price */}
+                  <div>
+                    <span className="text-[9px] text-text-secondary uppercase block tracking-wider">PRICE</span>
+                    <span className="font-bold text-accent">
+                      {prod.price ? `₹${prod.price.toFixed(2)} / ${prod.unit || "unit"}` : "—"}
+                    </span>
+                  </div>
+
+                  {/* Quantity & Quick Adjust */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onQuickQuantityChange(prod.id, Math.max(0, prod.quantity - 1))}
+                      className="w-7 h-7 rounded-sm bg-surface border border-accent/30 flex items-center justify-center text-accent font-bold hover:bg-accent hover:text-base text-sm active:scale-95"
+                      title="Quick Decrement"
+                    >
+                      -
+                    </button>
+                    <div className="text-center px-1">
+                      <span className="font-bold text-text-primary text-xs block">
+                        {prod.quantity} {prod.unit}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => onQuickQuantityChange(prod.id, prod.quantity + 1)}
+                      className="w-7 h-7 rounded-sm bg-surface border border-accent/30 flex items-center justify-center text-accent font-bold hover:bg-accent hover:text-base text-sm active:scale-95"
+                      title="Quick Increment"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Stock Level Notched Gauge Bar */}
+                <div className="space-y-1 pt-2 border-t border-accent/15">
+                  <div className="flex justify-between items-center text-[10px] text-text-secondary">
+                    <span>EST. SHELF STOCK GAUGE</span>
+                    <span className="text-accent font-bold">{percent}% FULL</span>
+                  </div>
+                  <div className="flex items-center gap-1 p-1 bg-surface border border-accent/20 rounded-sm">
+                    {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((step) => {
+                      const isFilled = percent >= step;
+                      return (
+                        <div
+                          key={step}
+                          className={`flex-1 h-3 rounded-none transition-all ${
+                            isFilled
+                              ? status === "CRITICAL"
+                                ? "bg-red-500"
+                                : status === "LOW"
+                                ? "bg-amber-400"
+                                : "bg-emerald-400"
+                              : "bg-white/10"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-accent/15">
+                  <button
+                    onClick={() => onEditProductClick(prod)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-surface border border-accent/30 text-accent text-xs font-bold hover:bg-accent/20 transition-colors"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>EDIT</span>
+                  </button>
+                  <button
+                    onClick={() => onDeleteProductClick(prod)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-surface border border-red-500/30 text-red-400 text-xs font-bold hover:bg-red-500/10 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>DELETE</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* DESKTOP LEDGER TABLE (Visible on screens >= md)               */}
+      {/* ------------------------------------------------------------- */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
             <tr className="bg-[#181512] text-accent font-mono border-b-2 border-accent/30 text-[11px] tracking-widest">
