@@ -379,14 +379,14 @@ export default function DashboardLayout() {
                   </div>
                   <div className="flex items-baseline gap-2 pt-0.5">
                     <span className="text-3xl sm:text-5xl font-display font-bold text-accent leading-none">
-                      {Math.max(1, criticalCount)} ITEMS
+                      {products.length === 0 ? "0 ITEMS" : `${criticalCount} ITEMS`}
                     </span>
                     <span className="text-[10px] sm:text-[11px] font-mono text-amber-400 font-bold uppercase tracking-wider">
-                      [WEEKEND SPIKE]
+                      {products.length === 0 ? "[NO RISK]" : "[WEEKEND SPIKE]"}
                     </span>
                   </div>
                   <p className="text-[10px] sm:text-[11px] font-mono text-text-secondary/80">
-                    • Historical Friday/Saturday demand model
+                    • {products.length === 0 ? "No inventory items registered" : "Historical Friday/Saturday demand model"}
                   </p>
                 </div>
 
@@ -400,14 +400,14 @@ export default function DashboardLayout() {
                   </div>
                   <div className="flex items-baseline gap-2 pt-0.5">
                     <span className="text-3xl sm:text-5xl font-display font-bold text-accent leading-none">
-                      14 MINS
+                      {products.length === 0 ? "NO SCAN" : "14 MINS"}
                     </span>
                     <span className="text-[10px] sm:text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                      [FRESH SCAN]
+                      {products.length === 0 ? "[AWAITING SCAN]" : "[FRESH SCAN]"}
                     </span>
                   </div>
                   <p className="text-[10px] sm:text-[11px] font-mono text-text-secondary/80">
-                    • Camera vision processed with 96.8% accuracy
+                    • {products.length === 0 ? "Perform camera scan to track stock" : "Camera vision processed with 96.8% accuracy"}
                   </p>
                 </div>
 

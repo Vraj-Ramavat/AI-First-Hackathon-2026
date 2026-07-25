@@ -75,11 +75,34 @@ export default function DashboardAnalytics({
 }: DashboardAnalyticsProps) {
   const [timeRange, setTimeRange] = useState<"7d" | "30d">("7d");
 
+  const hasProducts = products.length > 0;
+
   const criticalItems = products.filter((p) => p.quantity <= 5 || p.status === "CRITICAL");
   const lowStockItems = products.filter((p) => p.quantity > 5 && p.quantity <= 15);
 
+  // Calculate Category Distribution dynamically from store products
+  const categoryMap: Record<string, { count: number; critical: number }> = {};
+  products.forEach((p) => {
+    const cat = p.category || "General FMCG";
+    if (!categoryMap[cat]) {
+      categoryMap[cat] = { count: 0, critical: 0 };
+    }
+    categoryMap[cat].count += 1;
+    if (p.quantity <= 5 || p.status === "CRITICAL") {
+      categoryMap[cat].critical += 1;
+    }
+  });
+
+  const colors = ["#C9A84C", "#F59E0B", "#EF4444", "#4ADE80", "#60A5FA", "#A78BFA"];
+  const dynamicCategoryDistribution = Object.entries(categoryMap).map(([name, stat], i) => ({
+    name,
+    count: stat.count,
+    critical: stat.critical,
+    color: colors[i % colors.length],
+  }));
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-mono">
       
       {/* 7-Day Demand Graph & Forecast Plaque */}
       <div className="bg-surface border-2 border-accent/30 rounded-sm p-6 space-y-6">
@@ -120,71 +143,89 @@ export default function DashboardAnalytics({
           </div>
         </div>
 
-        {/* Recharts Area Chart */}
-        <div className="h-72 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={weeklyDemandData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#C9A84C" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="#C9A84C" stopOpacity={0.0} />
-                </linearGradient>
-                <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#EF4444" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(242, 237, 228, 0.08)" />
-              <XAxis
-                dataKey="day"
-                stroke="#7A7470"
-                tick={{ fontSize: 11, fontFamily: "var(--font-mono)" }}
-                tickLine={false}
-              />
-              <YAxis
-                stroke="#7A7470"
-                tick={{ fontSize: 11, fontFamily: "var(--font-mono)" }}
-                tickLine={false}
-              />
-              <Tooltip content={<CustomLedgerTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="demand"
-                name="Demand Volume"
-                stroke="#C9A84C"
-                strokeWidth={2.5}
-                fillOpacity={1}
-                fill="url(#goldGradient)"
-              />
-              <Area
-                type="monotone"
-                dataKey="stockouts"
-                name="Stockout Risk"
-                stroke="#EF4444"
-                strokeWidth={1.5}
-                fillOpacity={1}
-                fill="url(#redGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        {/* Recharts Area Chart OR Empty State Plaque */}
+        {hasProducts ? (
+          <div className="h-72 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={weeklyDemandData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#C9A84C" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#C9A84C" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#EF4444" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(242, 237, 228, 0.08)" />
+                <XAxis
+                  dataKey="day"
+                  stroke="#7A7470"
+                  tick={{ fontSize: 11, fontFamily: "var(--font-mono)" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  stroke="#7A7470"
+                  tick={{ fontSize: 11, fontFamily: "var(--font-mono)" }}
+                  tickLine={false}
+                />
+                <Tooltip content={<CustomLedgerTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="demand"
+                  name="Demand Volume"
+                  stroke="#C9A84C"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#goldGradient)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="stockouts"
+                  name="Stockout Risk"
+                  stroke="#EF4444"
+                  strokeWidth={1.5}
+                  fillOpacity={1}
+                  fill="url(#redGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="h-64 w-full flex flex-col items-center justify-center text-center p-6 bg-[#141210]/60 border border-accent/20 rounded-sm font-mono space-y-3">
+            <Activity className="w-10 h-10 text-accent/40" />
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">[ NO DEMAND FORECAST DATA AVAILABLE ]</h3>
+            <p className="text-xs text-text-secondary max-w-md">
+              There are currently 0 products in <span className="text-accent uppercase font-bold">{currentStoreName}</span>. Log products in the Inventory register to render demand curves and stockout predictions.
+            </p>
+            <button
+              onClick={onSwitchToInventory}
+              className="px-4 py-2 bg-accent text-base text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-all border border-accent/40 cursor-pointer"
+            >
+              + Add Products in Inventory
+            </button>
+          </div>
+        )}
 
         {/* Graph Footnote Legend */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-accent/20 font-mono text-xs">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-accent rounded-none border border-accent/60" />
-            <span className="text-text-secondary uppercase">Gold Line:</span>
-            <span className="text-text-primary font-bold">Predicted FMCG Demand</span>
+        {hasProducts && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-accent/20 font-mono text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-accent rounded-none border border-accent/60" />
+              <span className="text-text-secondary uppercase">Gold Line:</span>
+              <span className="text-text-primary font-bold">Predicted FMCG Demand</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-red-500 rounded-none border border-red-400" />
+              <span className="text-text-secondary uppercase">Red Fill:</span>
+              <span className="text-red-400 font-bold">Weekend Stockout Spike</span>
+            </div>
+            <div className="flex items-center justify-end gap-1.5 text-accent font-bold uppercase">
+              <span>[ Peak Surge: FRI - SAT ]</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-none border border-red-400" />
-            <span className="text-text-secondary uppercase">Red Fill:</span>
-            <span className="text-red-400 font-bold">Weekend Stockout Spike</span>
-          </div>
-          <div className="flex items-center justify-end gap-1.5 text-accent font-bold uppercase">
-            <span>[ Peak Surge: FRI - SAT ]</span>
-          </div>
-        </div>
+        )}
 
       </div>
 
@@ -199,42 +240,52 @@ export default function DashboardAnalytics({
               <span>CATEGORY STOCK DISTRIBUTION</span>
             </h3>
             <span className="text-[11px] font-mono text-accent font-bold border border-accent/30 px-2 py-0.5 rounded-none bg-accent/10">
-              4 CATEGORIES
+              {dynamicCategoryDistribution.length} CATEGORIES
             </span>
           </div>
 
-          <div className="h-48 w-full pt-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryDistribution} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(242, 237, 228, 0.08)" horizontal={false} />
-                <XAxis type="number" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
-                <YAxis dataKey="name" type="category" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
-                <Tooltip
-                  formatter={(val: any) => [`${val} SKUs in Register`, "Tracked Stock"]}
-                  contentStyle={{ backgroundColor: "#141210", borderColor: "rgba(201, 168, 76, 0.4)", fontFamily: "var(--font-mono)", fontSize: "11px" }}
-                />
-                <Bar dataKey="count" radius={[0, 2, 2, 0]}>
-                  {categoryDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="space-y-2 pt-2 border-t border-accent/20 font-mono text-xs">
-            {categoryDistribution.map((cat, i) => (
-              <div key={i} className="flex justify-between items-center text-text-secondary">
-                <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-none" style={{ backgroundColor: cat.color }} />
-                  <span>{cat.name}</span>
-                </span>
-                <span className="font-bold text-text-primary">
-                  {cat.count} SKUs {cat.critical > 0 && <span className="text-red-400">({cat.critical} Critical)</span>}
-                </span>
+          {hasProducts ? (
+            <>
+              <div className="h-48 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={dynamicCategoryDistribution} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(242, 237, 228, 0.08)" horizontal={false} />
+                    <XAxis type="number" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
+                    <YAxis dataKey="name" type="category" stroke="#7A7470" tick={{ fontSize: 10, fontFamily: "var(--font-mono)" }} />
+                    <Tooltip
+                      formatter={(val: any) => [`${val} SKUs in Register`, "Tracked Stock"]}
+                      contentStyle={{ backgroundColor: "#141210", borderColor: "rgba(201, 168, 76, 0.4)", fontFamily: "var(--font-mono)", fontSize: "11px" }}
+                    />
+                    <Bar dataKey="count" radius={[0, 2, 2, 0]}>
+                      {dynamicCategoryDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+
+              <div className="space-y-2 pt-2 border-t border-accent/20 font-mono text-xs">
+                {dynamicCategoryDistribution.map((cat, i) => (
+                  <div key={i} className="flex justify-between items-center text-text-secondary">
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-none" style={{ backgroundColor: cat.color }} />
+                      <span>{cat.name}</span>
+                    </span>
+                    <span className="font-bold text-text-primary">
+                      {cat.count} SKUs {cat.critical > 0 && <span className="text-red-400">({cat.critical} Critical)</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="h-48 w-full flex flex-col items-center justify-center text-center p-4 bg-[#141210]/60 border border-accent/20 rounded-sm font-mono space-y-2">
+              <Layers className="w-8 h-8 text-accent/30" />
+              <p className="text-xs font-bold text-text-primary uppercase tracking-wider">[ 0 CATEGORIES TRACKED ]</p>
+              <p className="text-[11px] text-text-secondary">Add products in Inventory to view store category distribution.</p>
+            </div>
+          )}
         </div>
 
         {/* Card 2: AI Kirana Reorder Action Panel */}
@@ -245,37 +296,52 @@ export default function DashboardAnalytics({
                 <Zap className="w-4 h-4 text-accent" />
                 <span>AI REORDER INSIGHTS &amp; ACTIONS</span>
               </h3>
-              <span className="text-[10px] font-mono text-red-400 font-bold border border-red-500/30 px-2 py-0.5 rounded-none bg-red-500/10 uppercase">
+              <span className={`text-[10px] font-mono font-bold border px-2 py-0.5 rounded-none uppercase ${
+                criticalItems.length > 0 ? "text-red-400 border-red-500/30 bg-red-500/10" : "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
+              }`}>
                 {criticalItems.length} HIGH URGENCY
               </span>
             </div>
 
             <p className="text-xs font-mono text-text-secondary">
-              Based on live shelf scans and weekend sales velocity for <strong className="text-accent">{currentStoreName}</strong>:
+              Based on live shelf scans and sales velocity for <strong className="text-accent uppercase">{currentStoreName}</strong>:
             </p>
 
             <div className="space-y-2 font-mono text-xs">
-              <div className="p-3 bg-surface-2 border-l-4 border-l-red-500 border-y border-r border-accent/20 rounded-none space-y-1">
-                <div className="flex justify-between text-red-400 font-bold uppercase text-[11px]">
-                  <span>• Critical Stockout Alert</span>
-                  <span>48H HORIZON</span>
-                </div>
-                <p className="text-text-primary text-xs font-semibold">
-                  {criticalItems.length > 0
-                    ? `${criticalItems.map((p) => p.name).slice(0, 2).join(", ")} will run out before Saturday peak.`
-                    : "Maggi 70g & Parle-G 80g predicted stockout by Friday evening."}
-                </p>
-              </div>
+              {hasProducts ? (
+                <>
+                  <div className="p-3 bg-surface-2 border-l-4 border-l-red-500 border-y border-r border-accent/20 rounded-none space-y-1">
+                    <div className="flex justify-between text-red-400 font-bold uppercase text-[11px]">
+                      <span>• Stockout Risk Alert</span>
+                      <span>48H HORIZON</span>
+                    </div>
+                    <p className="text-text-primary text-xs font-semibold">
+                      {criticalItems.length > 0
+                        ? `${criticalItems.map((p) => p.name).slice(0, 2).join(", ")} will run out before weekend peak.`
+                        : "All logged SKUs are currently above critical depletion thresholds."}
+                    </p>
+                  </div>
 
-              <div className="p-3 bg-surface-2 border-l-4 border-l-accent border-y border-r border-accent/20 rounded-none space-y-1">
-                <div className="flex justify-between text-accent font-bold uppercase text-[11px]">
-                  <span>• Recommended Wholesale Order</span>
-                  <span>WHATSAPP READY</span>
+                  <div className="p-3 bg-surface-2 border-l-4 border-l-accent border-y border-r border-accent/20 rounded-none space-y-1">
+                    <div className="flex justify-between text-accent font-bold uppercase text-[11px]">
+                      <span>• Recommended Wholesale Order</span>
+                      <span>WHATSAPP READY</span>
+                    </div>
+                    <p className="text-text-secondary text-xs">
+                      Automated reorder list created for primary FMCG distributor.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div className="p-4 bg-surface-2 border-l-4 border-l-accent border-y border-r border-accent/20 rounded-none space-y-1">
+                  <div className="text-accent font-bold uppercase text-[11px]">
+                    • REGISTER STATUS: EMPTY
+                  </div>
+                  <p className="text-text-secondary text-xs">
+                    No items registered in <strong className="text-accent uppercase">{currentStoreName}</strong>. Add products in the Inventory tab to enable 2-hour WhatsApp reorder feeds.
+                  </p>
                 </div>
-                <p className="text-text-secondary text-xs">
-                  Automated reorder list created for primary FMCG distributor.
-                </p>
-              </div>
+              )}
             </div>
           </div>
 
