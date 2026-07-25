@@ -47,7 +47,7 @@ const PANELS: PanelData[] = [
 export default function DashboardFlipTransitionAuth() {
   const [isLoginActive, setIsLoginActive] = useState<boolean>(false);
   const [isFlipping, setIsFlipping] = useState<boolean>(false);
-  
+
   // Controls dual-ball animation stage: "idle" | "rolling" | "expanded"
   const [ballStage, setBallStage] = useState<"idle" | "rolling" | "expanded">("idle");
 
@@ -97,15 +97,15 @@ export default function DashboardFlipTransitionAuth() {
 
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden selection:bg-[#C9A84C] selection:text-black">
-      
+
       {/* Perspective Container for 3D Flips & Spherical Motion */}
       <div className="relative min-h-screen w-full perspective-1200 overflow-hidden flex flex-col justify-center items-center">
-        
+
         {/* Layer 2: Dual 3D Spherical Rolling Orbs Reveal Layer */}
         <AnimatePresence>
           {isLoginActive && (
             <div className="absolute inset-0 z-10 w-full h-full flex flex-col md:flex-row items-center justify-center overflow-hidden">
-              
+
               {/* Back to Dashboard Floating Trigger */}
               <div className="absolute top-6 left-6 sm:top-8 sm:left-10 z-40">
                 <button
@@ -170,15 +170,17 @@ export default function DashboardFlipTransitionAuth() {
                 >
                   {/* StockSaathi Website Logo & VIP Badge */}
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C9A84C]/20 via-black to-black border border-[#C9A84C]/40 flex items-center justify-center p-2.5 shadow-2xl shadow-[#C9A84C]/20">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C9A84C]/20 via-black to-black border border-[#C9A84C]/40 flex items-center justify-center p-2.5 shadow-2xl shadow-[#C9A84C]/20 perspective-500">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <motion.img
+                        animate={{ rotateY: [0, 360] }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                         src="/logo.svg"
                         alt="StockSaathi Logo"
-                        className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(201,168,76,0.6)]"
+                        className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(201,168,76,0.6)] transform-gpu"
                       />
                     </div>
-                    
+
                     <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#C9A84C] bg-[#C9A84C]/10 px-3 py-0.5 rounded-full border border-[#C9A84C]/30">
                       KIRANA INTELLIGENCE V2.4
                     </span>
@@ -189,7 +191,7 @@ export default function DashboardFlipTransitionAuth() {
                     <h1 className="text-4xl font-display font-extrabold uppercase tracking-widest text-white">
                       Stock<span className="text-[#C9A84C]">Saathi</span>
                     </h1>
-                    
+
                     <p className="text-xs font-sans text-white/70 leading-relaxed max-w-xs mx-auto">
                       Elevate your experience with exclusive perks, early releases, and special rewards.
                     </p>

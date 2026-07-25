@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArrowUpRight, User } from "lucide-react";
-import Logo from "@/src/components/Logo";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -26,9 +26,49 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between">
         {/* Logo Left */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <Logo />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          {/* 3D Rotating Logo Badge matching login page style */}
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C9A84C]/20 via-black to-black border border-[#C9A84C]/40 flex items-center justify-center p-1.5 shadow-lg shadow-[#C9A84C]/10 relative overflow-hidden" style={{ perspective: "600px" }}>
+            <div className="absolute inset-0 rounded-xl bg-[radial-gradient(circle_at_30%_30%,rgba(255,243,209,0.15),transparent_70%)] pointer-events-none" />
+            <motion.div
+              animate={{
+                rotateY: [0, 360],
+                rotateX: [6, -6, 6],
+                filter: [
+                  "brightness(1.2) drop-shadow(0 0 8px rgba(201,168,76,0.8))",
+                  "brightness(0.7) drop-shadow(0 0 3px rgba(201,168,76,0.3))",
+                  "brightness(1.2) drop-shadow(0 0 8px rgba(201,168,76,0.8))",
+                ],
+              }}
+              transition={{
+                rotateY: { duration: 5.5, repeat: Infinity, ease: "linear" },
+                rotateX: { duration: 2.75, repeat: Infinity, ease: "easeInOut" },
+                filter: { duration: 2.75, repeat: Infinity, ease: "easeInOut" },
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+              className="w-full h-full flex items-center justify-center transform-gpu"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.svg"
+                alt="StockSaathi Logo"
+                className="w-full h-full object-contain"
+                style={{ transform: "translateZ(3px)" }}
+              />
+            </motion.div>
+          </div>
+
+          {/* Brand Text */}
+          <div className="flex items-center gap-0.5">
+            <span className="font-display font-bold text-xl sm:text-2xl text-text-primary tracking-tight">
+              Stock
+            </span>
+            <span className="font-display font-bold text-xl sm:text-2xl text-accent tracking-tight group-hover:text-accent-hover transition-colors">
+              Saathi
+            </span>
+          </div>
         </Link>
+
 
         {/* Center Nav Links */}
         <nav className="hidden md:flex items-center space-x-8 text-sm text-text-secondary">

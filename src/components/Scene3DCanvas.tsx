@@ -74,19 +74,11 @@ function SceneObjects({ scrollProgress }: { scrollProgress: number }) {
 
   return (
     <>
-      {/* Anchor 0: Hero Product Cluster (Shifted right to X = 2.8) */}
+      {/* Anchor 0: Hero 3D Gold Accent Ring */}
       <group ref={heroGroup} position={[2.8, -0.2, 0]}>
-        <mesh position={[-0.4, 0, 0]}>
-          <boxGeometry args={[1.0, 1.4, 0.35]} />
-          <meshStandardMaterial color="#1C1915" roughness={0.4} metalness={0.2} />
-        </mesh>
-        <mesh position={[0.4, 0.2, 0.3]}>
-          <boxGeometry args={[0.85, 1.2, 0.3]} />
-          <meshStandardMaterial color="#C9A84C" roughness={0.3} metalness={0.4} />
-        </mesh>
-        <mesh position={[0.5, -0.4, -0.1]}>
-          <cylinderGeometry args={[0.28, 0.28, 0.9, 32]} />
-          <meshStandardMaterial color="#C9A84C" roughness={0.2} metalness={0.6} />
+        <mesh rotation={[Math.PI / 3, 0.2, 0]}>
+          <torusGeometry args={[1.6, 0.03, 16, 64]} />
+          <meshStandardMaterial color="#C9A84C" roughness={0.2} metalness={0.8} />
         </mesh>
       </group>
 
