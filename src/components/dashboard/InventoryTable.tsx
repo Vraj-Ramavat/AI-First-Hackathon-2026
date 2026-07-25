@@ -26,7 +26,7 @@ export default function InventoryTable({
   return (
     <div className="w-full bg-surface border-2 border-accent/30 rounded-sm overflow-hidden shadow-none">
       {/* Table Header / Ledger Register Banner */}
-      <div className="p-6 border-b-2 border-accent/30 bg-gradient-to-r from-surface via-[#181512] to-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="p-6 border-b-2 border-accent/30 bg-surface-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-display font-bold text-text-primary uppercase tracking-wide flex items-center gap-3">
             <span>KIRANA DAILY INVENTORY REGISTER</span>
@@ -190,7 +190,7 @@ export default function InventoryTable({
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left text-xs border-collapse font-mono">
           <thead>
-            <tr className="bg-[#181512] text-accent font-mono border-b-2 border-accent/30 text-[11px] tracking-widest">
+            <tr className="bg-surface-2 text-accent font-mono border-b-2 border-accent/30 text-[11px] tracking-widest">
               <th className="py-3.5 px-6 font-bold uppercase">PRODUCT NAME</th>
               <th className="py-3.5 px-6 font-bold uppercase">CATEGORY</th>
               <th className="py-3.5 px-6 font-bold uppercase">QUANTITY &amp; ADJUST</th>

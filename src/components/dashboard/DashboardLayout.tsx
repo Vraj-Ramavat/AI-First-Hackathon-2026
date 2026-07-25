@@ -28,6 +28,7 @@ import DeleteProductModal from "@/src/components/dashboard/DeleteProductModal";
 import ScanShelfModal from "@/src/components/dashboard/ScanShelfModal";
 import ScanReviewModal, { ScanItemReview } from "@/src/components/dashboard/ScanReviewModal";
 import Logo from "@/src/components/Logo";
+import ThemeToggle from "@/src/components/ThemeToggle";
 
 export default function DashboardLayout() {
   const { data: session, status } = useSession();
@@ -225,8 +226,10 @@ export default function DashboardLayout() {
 
         {/* User Account & Logout Footer */}
         <div className="pt-6 border-t border-accent/20 space-y-3">
+          <ThemeToggle showText className="w-full justify-center py-2" />
+
           {session?.user ? (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-2 truncate">
                 <div className="w-7 h-7 rounded-sm bg-accent/20 border border-accent/40 flex items-center justify-center shrink-0">
                   <UserIcon className="w-3.5 h-3.5 text-accent" />
@@ -249,7 +252,7 @@ export default function DashboardLayout() {
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 pt-1">
               <Link
                 href="/auth/login"
                 className="flex-1 py-2 text-center rounded-sm bg-accent hover:bg-accent-hover text-base text-xs font-mono font-bold uppercase tracking-wider border border-accent/40"
@@ -277,8 +280,9 @@ export default function DashboardLayout() {
             <Logo textSize="text-lg sm:text-xl" />
           </Link>
 
-          {/* Store Switcher Container */}
-          <div className="flex items-center gap-2 max-w-[50%] shrink min-w-0">
+          {/* Store Switcher & Theme Toggle Container */}
+          <div className="flex items-center gap-2 max-w-[60%] shrink min-w-0">
+            <ThemeToggle />
             {stores.length > 0 && (
               <div className="w-full min-w-0">
                 <StoreSwitcher
@@ -336,7 +340,7 @@ export default function DashboardLayout() {
         {activeTab === "overview" && (
           <div className="space-y-6 sm:space-y-8">
             {/* Kirana Shop Signboard Top Metrics Strip */}
-            <div className="relative bg-gradient-to-b from-[#181512] via-surface to-[#0E0D0B] border-2 border-accent/30 rounded-sm p-4 sm:p-6 overflow-hidden">
+            <div className="relative bg-surface-2 border-2 border-accent/30 rounded-sm p-4 sm:p-6 overflow-hidden">
               {/* Top Brass Signboard Accent Line */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-accent/20 via-accent to-accent/20" />
               
@@ -457,7 +461,7 @@ export default function DashboardLayout() {
       {/* ------------------------------------------------------------- */}
       {/* MODERN KIRANA MOBILE BOTTOM NAVIGATION BAR (Mobile screens)   */}
       {/* ------------------------------------------------------------- */}
-      <nav className="block md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#141210]/95 backdrop-blur-lg border-t-2 border-accent/40 z-50 shadow-2xl">
+      <nav className="block md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface/95 backdrop-blur-lg border-t-2 border-accent/40 z-50 shadow-2xl">
         <div className="h-full grid grid-cols-4 items-center px-1">
           {/* Tab 1: Dashboard */}
           <button

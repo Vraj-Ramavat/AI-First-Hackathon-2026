@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArrowUpRight, User } from "lucide-react";
 import { motion } from "framer-motion";
+import ThemeToggle from "@/src/components/ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -112,6 +113,8 @@ export default function Navbar() {
 
         {/* Action Button Right */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <ThemeToggle />
+
           {!session ? (
             <Link
               href="/auth/login"

@@ -2,29 +2,164 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 13 11 8;
-    --surface: 20 18 16;
-    --surface-2: 28 25 21;
-    --text-primary: 242 237 228;
-    --text-secondary: 122 116 112;
-    --accent: 201 168 76;
-    --border-hairline: rgba(242, 237, 228, 0.08);
-  }
+:root {
+  --background: #0D0B08;
+  --surface: #141210;
+  --surface-2: #1C1915;
+  --text-primary: #F2EDE4;
+  --text-secondary: #A09890;
+  --accent: #C9A84C;
+  --accent-hover: #D8B85C;
+  --border-color: rgba(242, 237, 228, 0.12);
+}
 
-  * {
-    border-color: rgba(242, 237, 228, 0.08);
-  }
+[data-theme="light"], html[data-theme="light"], body[data-theme="light"], .light {
+  --background: #F6F4EE !important;
+  --surface: #FFFFFF !important;
+  --surface-2: #EBE7DF !important;
+  --text-primary: #181512 !important;
+  --text-secondary: #5C554E !important;
+  --accent: #9A7B2C !important;
+  --accent-hover: #7A5F1C !important;
+  --border-color: rgba(24, 21, 18, 0.15) !important;
+  color-scheme: light !important;
+}
 
-  body {
-    background-color: #0D0B08;
-    color: #F2EDE4;
-    font-family: var(--font-mono), 'JetBrains Mono', monospace;
-    overflow-x: hidden;
-    selection-background-color: #C9A84C;
-    selection-color: #0D0B08;
-  }
+[data-theme="light"] body, .light body, html.light body {
+  background-color: #F6F4EE !important;
+  color: #181512 !important;
+}
+
+/* Force light mode overrides on Tailwind Utility classes */
+[data-theme="light"] .bg-base, .light .bg-base {
+  background-color: #F6F4EE !important;
+}
+
+[data-theme="light"] .bg-surface, .light .bg-surface {
+  background-color: #FFFFFF !important;
+}
+
+[data-theme="light"] .bg-surface-2, .light .bg-surface-2 {
+  background-color: #EBE7DF !important;
+}
+
+[data-theme="light"] .text-text-primary, .light .text-text-primary {
+  color: #181512 !important;
+}
+
+[data-theme="light"] .text-text-secondary, .light .text-text-secondary {
+  color: #5C554E !important;
+}
+
+[data-theme="light"] .text-accent, .light .text-accent {
+  color: #9A7B2C !important;
+}
+
+[data-theme="light"] .border-accent\/20, .light .border-accent\/20,
+[data-theme="light"] .border-accent\/30, .light .border-accent\/30 {
+  border-color: rgba(154, 123, 44, 0.35) !important;
+}
+
+/* Light Theme Opacity & Border Utility Overrides */
+[data-theme="light"] .border-white\/5, .light .border-white\/5,
+[data-theme="light"] .border-white\/10, .light .border-white\/10,
+[data-theme="light"] .border-white\/20, .light .border-white\/20 {
+  border-color: rgba(26, 23, 20, 0.12) !important;
+}
+
+[data-theme="light"] .bg-surface-2\/60, .light .bg-surface-2\/60,
+[data-theme="light"] .bg-surface-2\/40, .light .bg-surface-2\/40,
+[data-theme="light"] .bg-surface-2\/30, .light .bg-surface-2\/30 {
+  background-color: rgba(235, 231, 223, 0.85) !important;
+}
+
+[data-theme="light"] .bg-base\/90, .light .bg-base\/90,
+[data-theme="light"] .bg-base\/85, .light .bg-base\/85,
+[data-theme="light"] .bg-base\/80, .light .bg-base\/80,
+[data-theme="light"] .bg-base\/60, .light .bg-base\/60 {
+  background-color: rgba(246, 244, 238, 0.95) !important;
+}
+
+[data-theme="light"] .bg-surface\/60, .light .bg-surface\/60,
+[data-theme="light"] .bg-surface\/30, .light .bg-surface\/30 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .hairline-b, .light .hairline-b {
+  border-bottom: 1px solid rgba(26, 23, 20, 0.12) !important;
+}
+
+[data-theme="light"] .hairline-t, .light .hairline-t {
+  border-top: 1px solid rgba(26, 23, 20, 0.12) !important;
+}
+
+[data-theme="light"] .hairline-l, .light .hairline-l {
+  border-left: 1px solid rgba(26, 23, 20, 0.12) !important;
+}
+
+[data-theme="light"] .hairline-r, .light .hairline-r {
+  border-right: 1px solid rgba(26, 23, 20, 0.12) !important;
+}
+
+[data-theme="light"] .hairline-all, .light .hairline-all {
+  border: 1px solid rgba(26, 23, 20, 0.12) !important;
+}
+
+/* Form inputs, dropdowns & select options in light mode */
+[data-theme="light"] input, .light input,
+[data-theme="light"] select, .light select,
+[data-theme="light"] textarea, .light textarea {
+  background-color: #FFFFFF !important;
+  color: #181512 !important;
+  border-color: rgba(26, 23, 20, 0.2) !important;
+}
+
+[data-theme="light"] select option, .light select option {
+  background-color: #FFFFFF !important;
+  color: #181512 !important;
+}
+
+/* Table & Register row styles in light mode */
+[data-theme="light"] table, .light table {
+  background-color: #FFFFFF !important;
+  color: #181512 !important;
+}
+
+[data-theme="light"] thead, .light thead,
+[data-theme="light"] thead tr, .light thead tr {
+  background-color: #EBE7DF !important;
+  color: #9A7B2C !important;
+}
+
+[data-theme="light"] tbody tr, .light tbody tr {
+  background-color: #FFFFFF !important;
+  color: #181512 !important;
+}
+
+[data-theme="light"] tbody tr:nth-child(even), .light tbody tr:nth-child(even) {
+  background-color: #F8F6F2 !important;
+}
+
+[data-theme="light"] tbody tr:hover, .light tbody tr:hover {
+  background-color: #F0ECE4 !important;
+}
+
+[data-theme="light"] th, .light th,
+[data-theme="light"] td, .light td {
+  border-color: rgba(26, 23, 20, 0.12) !important;
+}
+
+* {
+  border-color: var(--border-color);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
 
   /* Display Headline Style - Hand-painted Indian Kirana Signboard Lettering */
   h1, h2, h3, .font-display {
@@ -32,7 +167,6 @@
     letter-spacing: 0.03em;
     text-transform: uppercase;
   }
-}
 
 /* Custom Utilities for Hairlines and Subtle Glows */
 .border-hairline {

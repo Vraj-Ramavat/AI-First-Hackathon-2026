@@ -9,17 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#0D0B08",
-        surface: "#141210",
-        "surface-2": "#1C1915",
-        "text-primary": "#F2EDE4",
-        "text-secondary": "#7A7470",
+        base: "var(--background)",
+        surface: "var(--surface)",
+        "surface-2": "var(--surface-2)",
+        "text-primary": "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
         accent: {
-          DEFAULT: "#C9A84C",
-          hover: "#D8B85C",
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
           muted: "rgba(201, 168, 76, 0.15)",
         },
-        hairline: "rgba(242, 237, 228, 0.08)",
+        hairline: "var(--border-color)",
         status: {
           stock: "#4ADE80",
           low: "#F59E0B",
@@ -27,8 +27,8 @@ const config: Config = {
         }
       },
       borderColor: {
-        DEFAULT: "rgba(242, 237, 228, 0.08)",
-        hairline: "rgba(242, 237, 228, 0.08)",
+        DEFAULT: "var(--border-color)",
+        hairline: "var(--border-color)",
       },
       fontFamily: {
         display: ["var(--font-display)", "Teko", "Oswald", "sans-serif"],

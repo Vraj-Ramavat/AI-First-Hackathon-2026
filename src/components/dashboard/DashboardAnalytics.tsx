@@ -43,7 +43,7 @@ const categoryDistribution = [
 const CustomLedgerTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#141210] border-2 border-accent/40 rounded-sm p-3 font-mono text-xs shadow-2xl space-y-1.5 min-w-[180px]">
+      <div className="bg-surface border-2 border-accent/40 rounded-sm p-3 font-mono text-xs shadow-2xl space-y-1.5 min-w-[180px] text-text-primary">
         <div className="text-accent font-bold uppercase border-b border-accent/20 pb-1 flex items-center justify-between">
           <span>[ DAY: {label} ]</span>
           <span className="text-[10px] text-text-secondary">LEDGER ENTRY</span>
@@ -193,7 +193,7 @@ export default function DashboardAnalytics({
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-64 w-full flex flex-col items-center justify-center text-center p-6 bg-[#141210]/60 border border-accent/20 rounded-sm font-mono space-y-3">
+          <div className="h-64 w-full flex flex-col items-center justify-center text-center p-6 bg-surface-2/60 border border-accent/20 rounded-sm font-mono space-y-3">
             <Activity className="w-10 h-10 text-accent/40" />
             <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">[ NO DEMAND FORECAST DATA AVAILABLE ]</h3>
             <p className="text-xs text-text-secondary max-w-md">
@@ -280,7 +280,7 @@ export default function DashboardAnalytics({
               </div>
             </>
           ) : (
-            <div className="h-48 w-full flex flex-col items-center justify-center text-center p-4 bg-[#141210]/60 border border-accent/20 rounded-sm font-mono space-y-2">
+            <div className="h-48 w-full flex flex-col items-center justify-center text-center p-4 bg-surface-2/60 border border-accent/20 rounded-sm font-mono space-y-2">
               <Layers className="w-8 h-8 text-accent/30" />
               <p className="text-xs font-bold text-text-primary uppercase tracking-wider">[ 0 CATEGORIES TRACKED ]</p>
               <p className="text-[11px] text-text-secondary">Add products in Inventory to view store category distribution.</p>
