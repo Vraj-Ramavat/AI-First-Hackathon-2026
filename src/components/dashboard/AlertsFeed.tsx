@@ -18,11 +18,17 @@ export default function AlertsFeed({
 }: AlertsFeedProps) {
   const [ownerPhone, setOwnerPhone] = useState<string>("9876543210");
   const [tempPhone, setTempPhone] = useState<string>("9876543210");
-  const [callMeBotKey, setCallMeBotKey] = useState<string>("");
-  const [tempApiKey, setTempApiKey] = useState<string>("");
+  // Twilio Official WhatsApp Gateway Credentials
+  const [twilioSid, setTwilioSid] = useState<string>("");
+  const [twilioAuthToken, setTwilioAuthToken] = useState<string>("");
+  const [twilioPhone, setTwilioPhone] = useState<string>("whatsapp:+14155238886");
+
+  const [tempTwilioSid, setTempTwilioSid] = useState<string>("");
+  const [tempTwilioAuthToken, setTempTwilioAuthToken] = useState<string>("");
+  const [tempTwilioPhone, setTempTwilioPhone] = useState<string>("whatsapp:+14155238886");
+  const [isEditingTwilio, setIsEditingTwilio] = useState<boolean>(false);
 
   const [isEditingPhone, setIsEditingPhone] = useState<boolean>(false);
-  const [isEditingApiKey, setIsEditingApiKey] = useState<boolean>(false);
   const [savedNotice, setSavedNotice] = useState<boolean>(false);
   const [sentAlerts, setSentAlerts] = useState<Record<string, boolean>>({});
 
@@ -42,10 +48,22 @@ export default function AlertsFeed({
       setTempPhone(savedPhone);
     }
 
-    const savedApiKey = localStorage.getItem("stocksaathi_callmebot_key");
-    if (savedApiKey) {
-      setCallMeBotKey(savedApiKey);
-      setTempApiKey(savedApiKey);
+    const savedTwilioSid = localStorage.getItem("stocksaathi_twilio_sid");
+    if (savedTwilioSid) {
+      setTwilioSid(savedTwilioSid);
+      setTempTwilioSid(savedTwilioSid);
+    }
+
+    const savedTwilioToken = localStorage.getItem("stocksaathi_twilio_token");
+    if (savedTwilioToken) {
+      setTwilioAuthToken(savedTwilioToken);
+      setTempTwilioAuthToken(savedTwilioToken);
+    }
+
+    const savedTwilioPhone = localStorage.getItem("stocksaathi_twilio_phone");
+    if (savedTwilioPhone) {
+      setTwilioPhone(savedTwilioPhone);
+      setTempTwilioPhone(savedTwilioPhone);
     }
 
     const savedAuto = localStorage.getItem("stocksaathi_auto_whatsapp_schedule");
@@ -58,11 +76,19 @@ export default function AlertsFeed({
 
     // Initialize or load persistent target expiration timestamp
     let target = Number(localStorage.getItem("stocksaathi_timer_target_timestamp"));
-    if (!target || isNaN(target) || target <= Date.now()) {
-      target = Date.now() + TWO_HOURS_MS;
+    const now = Date.now();
+
+    // If target is missing, invalid, or expired, set next 2-hour target
+    if (!target || isNaN(target) || target <= now) {
+      target = now + TWO_HOURS_MS;
       localStorage.setItem("stocksaathi_timer_target_timestamp", String(target));
+      setTargetTimestamp(target);
+      setSecondsRemaining(TWO_HOURS_MS / 1000);
+    } else {
+      // Timer is actively running within the 2-hour window
+      setTargetTimestamp(target);
+      setSecondsRemaining(Math.max(0, Math.floor((target - now) / 1000)));
     }
-    setTargetTimestamp(target);
   }, []);
 
   // 2-Hour Live Persistent Timer Loop
@@ -96,13 +122,22 @@ export default function AlertsFeed({
     localStorage.setItem("stocksaathi_owner_phone", clean);
     setIsEditingPhone(false);
     setSavedNotice(true);
-    setTimeout(() => setSavedNotice(false), 3000);
   };
 
-  const handleSaveApiKey = () => {
-    setCallMeBotKey(tempApiKey.trim());
-    localStorage.setItem("stocksaathi_callmebot_key", tempApiKey.trim());
-    setIsEditingApiKey(false);
+  const handleSaveTwilio = () => {
+    const sid = tempTwilioSid.trim();
+    const token = tempTwilioAuthToken.trim();
+    const phone = tempTwilioPhone.trim() || "whatsapp:+14155238886";
+
+    setTwilioSid(sid);
+    setTwilioAuthToken(token);
+    setTwilioPhone(phone);
+
+    localStorage.setItem("stocksaathi_twilio_sid", sid);
+    localStorage.setItem("stocksaathi_twilio_token", token);
+    localStorage.setItem("stocksaathi_twilio_phone", phone);
+
+    setIsEditingTwilio(false);
     setSavedNotice(true);
     setTimeout(() => setSavedNotice(false), 3000);
   };
@@ -111,10 +146,18 @@ export default function AlertsFeed({
     const nextState = !autoScheduleEnabled;
     setAutoScheduleEnabled(nextState);
     localStorage.setItem("stocksaathi_auto_whatsapp_schedule", String(nextState));
-    if (nextState) {
-      const newTarget = Date.now() + TWO_HOURS_MS;
-      setTargetTimestamp(newTarget);
-      localStorage.setItem("stocksaathi_timer_target_timestamp", String(newTarget));
+
+    // Preserve running timer target unless no valid target exists or target has expired
+    let target = Number(localStorage.getItem("stocksaathi_timer_target_timestamp"));
+    const now = Date.now();
+    if (!target || isNaN(target) || target <= now) {
+      target = now + TWO_HOURS_MS;
+      localStorage.setItem("stocksaathi_timer_target_timestamp", String(target));
+      setTargetTimestamp(target);
+      setSecondsRemaining(TWO_HOURS_MS / 1000);
+    } else {
+      setTargetTimestamp(target);
+      setSecondsRemaining(Math.max(0, Math.floor((target - now) / 1000)));
     }
   };
 
@@ -151,14 +194,14 @@ export default function AlertsFeed({
 
     const activeStoreName = currentStoreName || "Hawks";
 
-    let text = `🛒 *StockSaathi AI 2-Hour Automated Alert*\n`;
+    let text = `🛒 *StockSaathi AI Automated Alert*\n`;
     text += `🏪 Store: *${activeStoreName}*\n\n`;
     text += `⚠️ *${alertTitle}*\n\n`;
     text += `*Items Needing Immediate Reorder:*\n`;
     items.forEach((it) => {
       text += `• *${it.name}*: ${it.qty}\n`;
     });
-    text += `\n📦 *Action Required:* Low-stock restock order auto-generated for ${activeStoreName}.\n\n_Automated 2-Hour Schedule by StockSaathi_`;
+    text += `\n📦 *Action Required:* Restock order generated for ${activeStoreName}.\n\n_Automated Schedule by StockSaathi_`;
 
     try {
       const res = await fetch("/api/send-whatsapp", {
@@ -167,21 +210,25 @@ export default function AlertsFeed({
         body: JSON.stringify({
           phone: cleanPhone,
           message: text,
-          apiKey: callMeBotKey,
           storeName: activeStoreName,
+          twilioAccountSid: twilioSid,
+          twilioAuthToken: twilioAuthToken,
+          twilioPhoneNumber: twilioPhone,
         }),
       });
 
       const data = await res.json();
 
-      if (data.provider === "callmebot" || data.provider === "twilio") {
+      if (data.error) {
+        setLastAutoDispatchStatus(`[TWILIO DISPATCH ERROR] ${data.error}`);
+      } else if (data.provider === "twilio") {
         setSentAlerts((prev) => ({ ...prev, [alertId]: true }));
-        setLastAutoDispatchStatus(`Zero-click WhatsApp message sent to +91 ${cleanPhone} for store '${activeStoreName}'!`);
+        setLastAutoDispatchStatus(`[TWILIO ZERO-CLICK SENT] WhatsApp message automatically delivered to +91 ${cleanPhone} for store '${activeStoreName}'!`);
       } else if (data.whatsappUrl) {
-        // Fallback: If no CallMeBot key, open WhatsApp URL with auto-focus
+        // Fallback: If no API key, open WhatsApp URL with auto-focus
         window.open(data.whatsappUrl, "_blank");
         setSentAlerts((prev) => ({ ...prev, [alertId]: true }));
-        setLastAutoDispatchStatus(`WhatsApp draft opened for store '${activeStoreName}'. (Tip: Add a free CallMeBot key below for 100% zero-click background delivery without Enter press).`);
+        setLastAutoDispatchStatus(`WhatsApp draft opened for store '${activeStoreName}'. (Tip: Configure Twilio API credentials below for 100% zero-click background delivery without Enter press).`);
       }
     } catch (err: any) {
       console.warn("Zero-click dispatch error:", err);
@@ -219,6 +266,20 @@ export default function AlertsFeed({
         "low-auto",
         `AUTOMATED REORDER ALERT (${activeStoreName})`,
         lowProducts.map((p) => ({ name: p.name, qty: `${p.quantity} ${p.unit} left` }))
+      );
+    } else if (products.length > 0) {
+      // All products in store are healthy
+      await dispatchWhatsAppMessage(
+        "healthy-auto",
+        `AUTOMATED INVENTORY STATUS (${activeStoreName})`,
+        products.slice(0, 5).map((p) => ({ name: p.name, qty: `${p.quantity} ${p.unit} in stock (OPTIMAL)` }))
+      );
+    } else {
+      // 0 Products in new store
+      await dispatchWhatsAppMessage(
+        "empty-store-auto",
+        `NEW STORE INITIALIZATION (${activeStoreName})`,
+        [{ name: "Store Register Status", qty: "0 products logged. Store registered and active for automated WhatsApp monitoring." }]
       );
     }
   };
@@ -319,7 +380,7 @@ export default function AlertsFeed({
         )}
       </div>
 
-      {/* Target Phone & Zero-Click CallMeBot Config Card */}
+      {/* Target Phone & Zero-Click Twilio Gateway Config Card */}
       <div className="p-5 rounded-2xl bg-surface-2 border border-white/10 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -401,55 +462,98 @@ export default function AlertsFeed({
           </div>
         </div>
 
-        {/* CallMeBot Free Zero-Click Gateway API Key Configurator */}
-        <div className="pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
-          <div className="flex items-center gap-2 text-text-secondary">
-            <Key className="w-4 h-4 text-accent shrink-0" />
-            <span>Zero-Click Background Gateway API Key:</span>
-            {!isEditingApiKey ? (
-              <span className="text-text-primary font-bold">
-                {callMeBotKey ? `••••${callMeBotKey.slice(-4)} (Configured)` : "Not Set (Optional)"}
+        {/* Twilio Official Zero-Click WhatsApp API Configuration */}
+        <div className="pt-3 border-t border-accent/20 space-y-3 font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-text-primary font-bold">
+              <Key className="w-4 h-4 text-accent shrink-0" />
+              <span>Twilio Official WhatsApp API (Primary Provider)</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-none font-bold uppercase ${
+                twilioSid && twilioAuthToken ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-accent/10 text-accent border border-accent/30"
+              }`}>
+                {twilioSid && twilioAuthToken ? "ACTIVE (ZERO-CLICK)" : "NOT CONFIGURED"}
               </span>
-            ) : (
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={tempApiKey}
-                  onChange={(e) => setTempApiKey(e.target.value)}
-                  placeholder="CallMeBot API Key"
-                  className="bg-base border border-white/20 rounded-lg px-2 py-1 text-xs font-mono text-text-primary focus:outline-none w-36"
-                />
-                <button
-                  type="button"
-                  onClick={handleSaveApiKey}
-                  className="px-2.5 py-1 rounded-lg bg-[#25D366] text-black text-[11px] font-bold"
-                >
-                  Save Key
-                </button>
-              </div>
-            )}
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => {
+                setTempTwilioSid(twilioSid);
+                setTempTwilioAuthToken(twilioAuthToken);
+                setTempTwilioPhone(twilioPhone || "whatsapp:+14155238886");
+                setIsEditingTwilio(!isEditingTwilio);
+              }}
+              className="text-accent hover:underline font-bold text-[11px] uppercase tracking-wider cursor-pointer"
+            >
+              {isEditingTwilio ? "Cancel Edit" : twilioSid ? "Edit Twilio Keys" : "+ Configure Twilio API Keys"}
+            </button>
           </div>
 
-          {!isEditingApiKey && (
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsEditingApiKey(true)}
-                className="text-xs text-accent hover:underline"
-              >
-                {callMeBotKey ? "Edit API Key" : "+ Add Free CallMeBot Key"}
-              </button>
-              <a
-                href={`https://api.whatsapp.com/send?phone=34644564688&text=${encodeURIComponent("I allow callmebot to send me messages")}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[11px] text-[#25D366] hover:underline"
-              >
-                (Get Free Key via WhatsApp ➔)
-              </a>
+          {isEditingTwilio && (
+            <div className="p-4 rounded-sm bg-base border border-accent/30 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-[10px] text-text-secondary uppercase font-bold">TWILIO ACCOUNT SID *</label>
+                  <input
+                    type="text"
+                    value={tempTwilioSid}
+                    onChange={(e) => setTempTwilioSid(e.target.value)}
+                    placeholder="ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                    className="w-full bg-surface border border-accent/30 rounded-sm px-3 py-1.5 text-xs text-text-primary font-mono focus:outline-none"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="block text-[10px] text-text-secondary uppercase font-bold">TWILIO AUTH TOKEN *</label>
+                  <input
+                    type="password"
+                    value={tempTwilioAuthToken}
+                    onChange={(e) => setTempTwilioAuthToken(e.target.value)}
+                    placeholder="••••••••••••••••••••••••••••••••"
+                    className="w-full bg-surface border border-accent/30 rounded-sm px-3 py-1.5 text-xs text-text-primary font-mono focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[10px] text-text-secondary uppercase font-bold">TWILIO WHATSAPP SENDER NUMBER (FOR SANDBOX: MUST BE whatsapp:+14155238886)</label>
+                  <button
+                    type="button"
+                    onClick={() => setTempTwilioPhone("whatsapp:+14155238886")}
+                    className="text-[10px] text-accent hover:underline font-bold uppercase"
+                  >
+                    Use Sandbox Default (+14155238886)
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={tempTwilioPhone}
+                  onChange={(e) => setTempTwilioPhone(e.target.value)}
+                  placeholder="whatsapp:+14155238886"
+                  className="w-full bg-surface border border-accent/30 rounded-sm px-3 py-1.5 text-xs text-text-primary font-mono focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <a
+                  href="https://console.twilio.com/us1/develop/sms/settings/whatsapp-sandbox"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] text-accent hover:underline flex items-center gap-1 font-bold"
+                >
+                  <span>Get Free Twilio Sandbox Keys (30s setup) ➔</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleSaveTwilio}
+                  className="px-4 py-1.5 bg-accent text-text-primary text-xs font-bold uppercase tracking-wider rounded-sm hover:bg-accent-hover transition-all cursor-pointer"
+                >
+                  Save Twilio Credentials
+                </button>
+              </div>
             </div>
           )}
-        </div>
       </div>
 
       {/* Feed List */}
@@ -600,6 +704,7 @@ export default function AlertsFeed({
         )}
 
       </div>
+    </div>
     </div>
   );
 }

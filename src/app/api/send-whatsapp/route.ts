@@ -9,13 +9,13 @@ export const dynamic = "force-dynamic";
  * WhatsApp Web tab opening or Enter key presses.
  * 
  * Supports:
- * 1. CallMeBot Free WhatsApp Gateway API (CALLMEBOT_API_KEY)
- * 2. Twilio WhatsApp Business API (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+ * 1. Twilio WhatsApp Business API (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+ * 2. WhatsApp Direct Link Launch Fallback
  * 3. Custom Webhook / GreenAPI / UltraMsg Integration
  */
 export async function POST(req: Request) {
   try {
-    const { phone, message, apiKey, storeName } = await req.json();
+    const { phone, message, apiKey, storeName, twilioAccountSid, twilioAuthToken, twilioPhoneNumber } = await req.json();
 
     if (!phone || !message) {
       return NextResponse.json(
@@ -24,47 +24,37 @@ export async function POST(req: Request) {
       );
     }
 
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    const formattedPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
-    const effectiveCallMeBotKey = apiKey || process.env.CALLMEBOT_API_KEY;
-
-    // 1. Try CallMeBot Free Direct WhatsApp API (Zero-click delivery straight to WhatsApp app)
-    if (effectiveCallMeBotKey) {
-      try {
-        console.log(`[CALLMEBOT_DISPATCH] Sending zero-click WhatsApp message to +${formattedPhone}...`);
-        const callMeBotUrl = `https://api.callmebot.com/whatsapp.php?phone=+${formattedPhone}&text=${encodeURIComponent(message)}&apikey=${effectiveCallMeBotKey}`;
-        const botRes = await fetch(callMeBotUrl);
-        const responseText = await botRes.text();
-
-        if (botRes.ok && !responseText.toLowerCase().includes("error")) {
-          return NextResponse.json({
-            success: true,
-            provider: "callmebot",
-            message: `Zero-click WhatsApp alert automatically delivered to +${formattedPhone} from ${storeName || "store"}!`,
-          });
-        } else {
-          console.warn(`[CALLMEBOT_FAILED] ${responseText}`);
-        }
-      } catch (callMeBotErr: any) {
-        console.warn("[CALLMEBOT_ERROR]:", callMeBotErr.message);
-      }
+    let cleanPhone = phone.replace(/[^0-9]/g, "");
+    let formattedPhone = cleanPhone;
+    if (cleanPhone.length === 10) {
+      formattedPhone = `91${cleanPhone}`;
+    } else if (cleanPhone.length === 11 && cleanPhone.startsWith("0")) {
+      formattedPhone = `91${cleanPhone.slice(1)}`;
     }
 
-    // 2. Try Twilio WhatsApp API
-    const twilioSid = process.env.TWILIO_ACCOUNT_SID;
-    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioPhone = process.env.TWILIO_WHATSAPP_NUMBER;
+    // 1. Try Twilio WhatsApp Business API (Primary Zero-Click Provider)
+    const effectiveTwilioSid = twilioAccountSid || process.env.TWILIO_ACCOUNT_SID;
+    const effectiveTwilioAuthToken = twilioAuthToken || process.env.TWILIO_AUTH_TOKEN;
 
-    if (twilioSid && twilioAuthToken && twilioPhone) {
+    // Clean and normalize From sender number (e.g. whatsapp:+14155238886)
+    let rawFrom = (twilioPhoneNumber || process.env.TWILIO_WHATSAPP_NUMBER || "+14155238886").trim();
+    if (rawFrom.startsWith("whatsapp:")) {
+      rawFrom = rawFrom.replace("whatsapp:", "").trim();
+    }
+    const cleanFromDigits = rawFrom.replace(/[^0-9]/g, "");
+    const formattedFrom = `whatsapp:+${cleanFromDigits}`;
+
+    if (effectiveTwilioSid && effectiveTwilioAuthToken) {
       try {
-        const authBuffer = Buffer.from(`${twilioSid}:${twilioAuthToken}`).toString("base64");
+        console.log(`[TWILIO_DISPATCH] From: ${formattedFrom} -> To: whatsapp:+${formattedPhone} via SID ${effectiveTwilioSid}`);
+        const authBuffer = Buffer.from(`${effectiveTwilioSid}:${effectiveTwilioAuthToken}`).toString("base64");
         const params = new URLSearchParams();
-        params.append("From", twilioPhone.startsWith("whatsapp:") ? twilioPhone : `whatsapp:${twilioPhone}`);
+        params.append("From", formattedFrom);
         params.append("To", `whatsapp:+${formattedPhone}`);
         params.append("Body", message);
 
         const twilioRes = await fetch(
-          `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`,
+          `https://api.twilio.com/2010-04-01/Accounts/${effectiveTwilioSid}/Messages.json`,
           {
             method: "POST",
             headers: {
@@ -75,27 +65,42 @@ export async function POST(req: Request) {
           }
         );
 
-        if (twilioRes.ok) {
+        const twilioData = await twilioRes.json();
+        console.log(`[TWILIO_RESPONSE] Status: ${twilioRes.status}, SID: ${twilioData.sid || twilioData.message}`);
+
+        if (twilioRes.ok && twilioData.sid) {
           return NextResponse.json({
             success: true,
             provider: "twilio",
-            message: `Zero-click WhatsApp message dispatched via Twilio to +${formattedPhone} for ${storeName}`,
+            message: `Zero-click WhatsApp message dispatched via Twilio (From: ${formattedFrom} -> To: whatsapp:+${formattedPhone}) for ${storeName}! (SID: ${twilioData.sid})`,
           });
+        } else {
+          console.warn(`[TWILIO_FAILED] Error Code ${twilioData.code}: ${twilioData.message}`);
+          return NextResponse.json(
+            {
+              error: `Twilio Error ${twilioData.code || twilioRes.status}: ${twilioData.message || "Failed to send message"} [Sent From: ${formattedFrom} ➔ To: whatsapp:+${formattedPhone}]`,
+              details: twilioData,
+            },
+            { status: 400 }
+          );
         }
       } catch (twilioErr: any) {
         console.warn("[TWILIO_ERROR]:", twilioErr.message);
+        return NextResponse.json(
+          { error: `Twilio Connection Error: ${twilioErr.message}` },
+          { status: 500 }
+        );
       }
     }
 
-    // 3. Fallback: Log Server-Side Auto-Dispatch & Return WhatsApp Direct Launch Link
+    // 2. Fallback: Return WhatsApp Direct Launch Link
     console.log(`[ZERO_CLICK_WHATSAPP_SIMULATED] Automatic alert for ${storeName || "Store"} -> +${formattedPhone}:\n${message}`);
 
     return NextResponse.json({
       success: true,
       provider: "direct_link_fallback",
-      message: `Automatic alert generated for ${storeName || "Store"}. (Tip: Add a CallMeBot API key for 100% background zero-click sending).`,
+      message: `Automatic alert generated for ${storeName || "Store"}. (Tip: Configure Twilio API keys for 100% background zero-click sending).`,
       whatsappUrl: `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`,
-      requiresCallMeBotKey: !effectiveCallMeBotKey,
     });
   } catch (error: any) {
     console.error("POST /api/send-whatsapp error:", error);
